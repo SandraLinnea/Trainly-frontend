@@ -1,0 +1,227 @@
+.main {
+  padding: 28px 28px 64px;
+  background-image: url("/Background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topLink {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+}
+
+.topLink:hover {
+  text-decoration: underline;
+}
+
+.topButton {
+  padding: 10px 16px;
+  border-radius: 8px;
+
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  backdrop-filter: blur(6px);
+}
+
+.topButton:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Resten av hero */
+.content {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 56px;
+  align-items: start;
+  padding-top: 48px;
+}
+
+.text {
+  max-width: 560px;
+}
+
+.title {
+  margin: 0;
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+.subtitle {
+  margin-top: 18px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.actions {
+  margin-top: 26px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.primary {
+  padding: 12px 20px;
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+
+  background: rgba(170, 205, 170, 0.22);
+  border: 1px solid rgba(170, 205, 170, 0.35);
+
+  backdrop-filter: blur(6px);
+}
+
+.primary:hover {
+  background: rgba(170, 205, 170, 0.3);
+}
+
+.ghost {
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+}
+
+.ghost:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.laptopWrap {
+  position: absolute;
+  top: 430px;
+  left: 290px;
+  width: 700px;
+  max-width: 720px;
+}
+
+.laptop {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 30px 70px rgba(0, 0, 0, 0.6));
+}
+
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.rightCol {
+  position: relative;
+  justify-self: end;
+  width: 100%;
+  max-width: 420px;
+  min-height: 520px;
+  margin-right: -220px; 
+}
+
+
+.rightLine {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.55);
+  margin-bottom: 18px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: grid;
+  gap: 14px;
+}
+
+.list a {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+}
+
+.list a:hover {
+  text-decoration: underline;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+}
+
+.listItem:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.icon {
+  flex: 0 0 auto;
+  opacity: 0.9;
+}
+
+@media (max-width: 900px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .rightCol {
+    max-width: 520px;
+    min-height: auto;
+  }
+
+  .laptopWrap {
+    position: static;
+    width: 100%;
+    margin-top: 22px;
+  }
+}
+

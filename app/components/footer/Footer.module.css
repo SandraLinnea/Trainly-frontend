@@ -1,0 +1,64 @@
+.footer {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 32px;
+  /* margin-top: 48px; */
+  padding: 32px 28px;
+  background-image: url("/HeaderAndFooter.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: rgba(255, 255, 255, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.brand {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.links a {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.mail {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+}
+
+.mail:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .footer {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px 20px;
+  }
+
+  .right {
+    justify-self: start;
+  }
+}
