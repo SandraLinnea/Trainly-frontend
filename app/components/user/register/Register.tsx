@@ -116,7 +116,7 @@ export default function Register() {
               </div>
 
               <label className={styles.srOnly} htmlFor="password">
-                Lösen
+                Lösenord
               </label>
               <div className={styles.inputWrap}>
                 <input
