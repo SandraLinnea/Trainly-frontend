@@ -20,7 +20,7 @@ export default function Hero() {
         </div>
 
         <div className={styles.topActions}>
-          <Link href="/login" className={styles.topLink}>
+          <Link href="/auth/login" className={styles.topLink}>
             Logga in
           </Link>
           <Link href="/signup" className={styles.topButton}>
