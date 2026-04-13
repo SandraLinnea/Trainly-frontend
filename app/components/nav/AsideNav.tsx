@@ -30,7 +30,7 @@ export default function AsideNav() {
       <ul className={styles.list}>
         {items.map(({ href, label, Icon }) => (
           <li key={href}>
-            <Link href={href} className={styles.listItem}>
+            <Link href={href} className={styles.listItem} prefetch={false}>
               <Icon className={styles.icon} />
               <span>{label}</span>
             </Link>

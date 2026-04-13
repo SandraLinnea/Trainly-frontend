@@ -13,13 +13,13 @@ export default function Footer() {
 
       <div className={styles.center}>
         <div className={styles.links}>
-          <Link href="/about">Om Trainly</Link>
+          <Link href="/about" prefetch={false}>Om Trainly</Link>
           <span>·</span>
-          <Link href="/privacy">Integritetspolicy</Link>
+          <Link href="/privacy" prefetch={false}>Integritetspolicy</Link>
           <span>·</span>
-          <Link href="/terms">Anvandarvillkor</Link>
+          <Link href="/terms" prefetch={false}>Anvandarvillkor</Link>
           <span>·</span>
-          <Link href="/contact">Kontakt</Link>
+          <Link href="/contact" prefetch={false}>Kontakt</Link>
         </div>
       </div>
 

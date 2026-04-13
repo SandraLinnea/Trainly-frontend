@@ -53,35 +53,35 @@ export default function Hero() {
     <div className={styles.rightLine} />
     <ul className={styles.list}>
   <li>
-    <Link href="/shopping" className={styles.listItem}>
+    <Link href="/shopping" className={styles.listItem} prefetch={false}>
       <ShoppingIcon className={styles.icon} />
       Shopping
     </Link>
   </li>
 
   <li>
-    <Link href="/dogclub" className={styles.listItem}>
+    <Link href="/dogclub" className={styles.listItem} prefetch={false}>
       <DogClubIcon className={styles.icon} />
       Brukshundsklubbar
     </Link>
   </li>
 
   <li>
-    <Link href="/competitions" className={styles.listItem}>
+    <Link href="/competitions" className={styles.listItem} prefetch={false}>
       <TrophyIcon className={styles.icon} />
       SBK Tävling
     </Link>
   </li>
 
   <li>
-    <Link href="/vets" className={styles.listItem}>
+    <Link href="/vets" className={styles.listItem} prefetch={false}>
       <VetIcon className={styles.icon} />
       Veterinär
     </Link>
   </li>
 
   <li>
-    <Link href="/courses" className={styles.listItem}>
+    <Link href="/courses" className={styles.listItem} prefetch={false}>
       <CoursesIcon className={styles.icon} />
       Kurser
     </Link>
