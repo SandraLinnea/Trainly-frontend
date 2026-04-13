@@ -48,7 +48,7 @@ export default function LogoLink({
   return (
     <Link href={href} aria-label="Trainly hem" className={className}>
       <Image
-        src="/Trainlylogo.png"
+        src="/DogTrainlyLogoTransparent.png"
         alt="Trainly"
         width={width}
         height={height}

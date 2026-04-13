@@ -32,20 +32,20 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
-        <LogoLink width={170} height={64} />
+        <LogoLink width={310} height={128} />
       </div>
 
       <nav className={styles.actions} aria-label="Huvudnavigation">
-        <Link href="/logbook" className={styles.link}>
+        <Link href="/logbook" className={styles.link} prefetch={false}>
           Dagbok
         </Link>
-        <Link href="/calendar" className={styles.link}>
+        <Link href="/calendar" className={styles.link} prefetch={false}>
           Kalender
         </Link>
-        <Link href="/dogs" className={styles.link}>
+        <Link href="/dogs" className={styles.link} prefetch={false}>
           Mina hundar
         </Link>
-        <Link href="/friends" className={styles.link}>
+        <Link href="/friends" className={styles.link} prefetch={false}>
           Vanner
         </Link>
       </nav>

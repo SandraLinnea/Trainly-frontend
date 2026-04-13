@@ -28,9 +28,9 @@ export default function LandingHome() {
               </div>
 
               <div className={styles.textBlock}>
-                <h2 className={styles.kicker}>Plan. Trana. Folj.</h2>
+                <h2 className={styles.kicker}>Planera. Träna. Följ upp.</h2>
                 <p className={styles.lead}>
-                  Logga dina traningspassen for folj ditt och din hunds
+                  Logga dina träningspass och följ ditt och din hunds
                   utveckling.
                 </p>
               </div>

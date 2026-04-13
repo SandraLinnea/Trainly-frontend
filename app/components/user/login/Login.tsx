@@ -66,7 +66,7 @@ export default function Login() {
     <div className={styles.page}>
       <div className={styles.shell}>
         <div className={styles.headerRow}>
-          <LogoLink width={190} height={78} />
+          <LogoLink width={360} height={150} />
         </div>
 
         <main className={styles.main}>
@@ -129,7 +129,7 @@ export default function Login() {
 
             <div className={styles.links}>
               <Link href="/auth/register">Registrera dig</Link>
-              <Link href="/auth/forgot">Glomt losenord?</Link>
+              <Link href="/auth/forgot" prefetch={false}>Glomt losenord?</Link>
             </div>
           </section>
         </main>

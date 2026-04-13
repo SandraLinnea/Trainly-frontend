@@ -19,6 +19,7 @@
 .brand {
   display: flex;
   align-items: center;
+  margin-left: -98px;
 }
 
 .topActions {
@@ -239,6 +240,10 @@
 
   .topRow {
     max-width: none;
+  }
+
+  .brand {
+    margin-left: 0;
   }
 }
 

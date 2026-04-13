@@ -16,9 +16,13 @@
 
 /* Loggan uppe vänster */
 .headerRow {
-  padding: 28px 28px 0;
+  width: 100%;
+  max-width: 1180px;
+  padding: 28px 28px 0 116px;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 /* Centrerat kort */
@@ -190,6 +194,12 @@
 }
 
 @media (max-width: 860px) {
+  .headerRow {
+    max-width: none;
+    margin: 0;
+    padding: 28px 28px 0;
+  }
+
   .card {
     padding: 38px 22px;
     max-width: 520px;

@@ -12,17 +12,13 @@ export default function Register() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function clearSelection(
-    e: React.FocusEvent<HTMLInputElement>
-  ) {
+  function clearSelection(e: React.FocusEvent<HTMLInputElement>) {
     const { value } = e.currentTarget;
     const caretPosition = value.length;
 
@@ -52,9 +48,7 @@ export default function Register() {
         body: JSON.stringify({
           firstName,
           lastName,
-          username,
           email,
-          phone,
           password,
         }),
       });
@@ -77,7 +71,7 @@ export default function Register() {
     <div className={styles.page}>
       <div className={styles.shell}>
         <div className={styles.headerRow}>
-          <LogoLink width={190} height={78} />
+          <LogoLink width={360} height={150} />
         </div>
 
         <main className={styles.main}>
@@ -87,7 +81,7 @@ export default function Register() {
 
             <form className={styles.form} onSubmit={onSubmit}>
               <label className={styles.srOnly} htmlFor="firstName">
-                Förnamn
+                Fornamn
               </label>
               <div className={styles.inputWrap}>
                 <input
@@ -97,7 +91,7 @@ export default function Register() {
                   onChange={(e) => setFirstName(e.target.value)}
                   onFocus={clearSelection}
                   autoComplete="given-name"
-                  placeholder="Förnamn"
+                  placeholder="Fornamn"
                   required
                 />
               </div>
@@ -114,22 +108,6 @@ export default function Register() {
                   onFocus={clearSelection}
                   autoComplete="family-name"
                   placeholder="Efternamn"
-                  required
-                />
-              </div>
-
-              <label className={styles.srOnly} htmlFor="username">
-                Användarnamn
-              </label>
-              <div className={styles.inputWrap}>
-                <input
-                  id="username"
-                  className={styles.input}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  onFocus={clearSelection}
-                  autoComplete="username"
-                  placeholder="Användarnamn"
                   required
                 />
               </div>
@@ -151,21 +129,6 @@ export default function Register() {
                 />
               </div>
 
-              <label className={styles.srOnly} htmlFor="phone">
-                Telefon
-              </label>
-              <div className={styles.inputWrap}>
-                <input
-                  id="phone"
-                  className={styles.input}
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  onFocus={clearSelection}
-                  autoComplete="tel"
-                  placeholder="Telefon"
-                />
-              </div>
-
               <label className={styles.srOnly} htmlFor="password">
                 Losenord
               </label>
@@ -178,7 +141,7 @@ export default function Register() {
                   onChange={(e) => setPassword(e.target.value)}
                   onFocus={clearSelection}
                   autoComplete="new-password"
-                  placeholder="Lösenord"
+                  placeholder="Losenord"
                   required
                 />
                 <button
