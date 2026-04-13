@@ -1,4 +1,6 @@
 .main {
+  flex: 1;
+  min-height: calc(100vh - 120px);
   padding: 28px 28px 64px;
   background-image: url("/Background.png");
   background-size: cover;
@@ -56,11 +58,19 @@
 
 /* Resten av hero */
 .content {
+  position: relative;
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 56px;
   align-items: start;
   padding-top: 48px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.topRow {
+  max-width: 1180px;
+  margin: 0 auto;
 }
 
 .text {
@@ -133,7 +143,7 @@
 
 .laptopWrap {
   position: absolute;
-  top: 430px;
+  top: 250px;
   left: 290px;
   width: 700px;
   max-width: 720px;
@@ -211,17 +221,24 @@
   .content {
     grid-template-columns: 1fr;
     gap: 32px;
+    max-width: none;
   }
 
   .rightCol {
     max-width: 520px;
     min-height: auto;
+    margin-right: 0;
+    justify-self: start;
   }
 
   .laptopWrap {
     position: static;
     width: 100%;
     margin-top: 22px;
+  }
+
+  .topRow {
+    max-width: none;
   }
 }
 

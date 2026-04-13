@@ -1,6 +1,12 @@
 import Link from "next/link";
 import styles from "./AsideNav.module.css";
-import { DogClubIcon, CoursesIcon, TrophyIcon, VetIcon, ShoppingIcon, } from "../icons/NavIcons";
+import {
+  CoursesIcon,
+  DogClubIcon,
+  ShoppingIcon,
+  TrophyIcon,
+  VetIcon,
+} from "../icons/NavIcons";
 
 type NavItem = {
   href: string;
@@ -9,16 +15,17 @@ type NavItem = {
 };
 
 const items: NavItem[] = [
-  { href: "/shopping", label: "Shopping", Icon: ShoppingIcon },
   { href: "/dogclub", label: "Brukshundsklubbar", Icon: DogClubIcon },
-  { href: "/competitions", label: "SBK Tävling", Icon: TrophyIcon },
-  { href: "/vets", label: "Veterinär", Icon: VetIcon },
   { href: "/courses", label: "Kurser", Icon: CoursesIcon },
+  { href: "/competitions", label: "SBK Tavling", Icon: TrophyIcon },
+  { href: "/shopping", label: "Shopping", Icon: ShoppingIcon },
+  { href: "/vets", label: "Veterinar", Icon: VetIcon },
 ];
 
 export default function AsideNav() {
   return (
-    <aside className={styles.aside} aria-label="Snabblänkar">
+    <aside className={styles.aside} aria-label="Snabblankar">
+      <h2 className={styles.heading}>Brukshundsklubbar</h2>
       <div className={styles.rightLine} aria-hidden />
       <ul className={styles.list}>
         {items.map(({ href, label, Icon }) => (

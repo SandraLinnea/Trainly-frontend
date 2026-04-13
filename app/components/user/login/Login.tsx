@@ -1,17 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { getApiUrl, readApiError } from "../../../lib/api";
+import LogoLink from "../../brand/LogoLink";
 import styles from "./Login.module.css";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function clearSelection(
+    e: React.FocusEvent<HTMLInputElement>
+  ) {
+    const { value } = e.currentTarget;
+    const caretPosition = value.length;
+
+    if (
+      e.currentTarget.type === "text" ||
+      e.currentTarget.type === "search" ||
+      e.currentTarget.type === "tel" ||
+      e.currentTarget.type === "url" ||
+      e.currentTarget.type === "password"
+    ) {
+      e.currentTarget.setSelectionRange(caretPosition, caretPosition);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,11 +39,24 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // TODO: koppla till backend senare (Hono + Supabase)
-      // Ex: await fetch("/api/auth/login", { method:"POST", headers:{...}, body: JSON.stringify({ username, password }) })
-      await new Promise((r) => setTimeout(r, 450));
+      const response = await fetch(getApiUrl("/api/auth/login"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        setError(await readApiError(response, "Fel email eller losenord."));
+        return;
+      }
+
+      router.push("/home");
+      router.refresh();
     } catch {
-      setError("Fel användarnamn eller lösenord.");
+      setError("Kunde inte logga in just nu.");
     } finally {
       setLoading(false);
     }
@@ -33,31 +66,28 @@ export default function Login() {
     <div className={styles.page}>
       <div className={styles.shell}>
         <div className={styles.headerRow}>
-          <Image
-            src="/Trainlylogo.png"
-            alt="Trainly"
-            width={190}
-            height={78}
-            priority
-          />
+          <LogoLink width={190} height={78} />
         </div>
 
         <main className={styles.main}>
           <section className={styles.card} aria-label="Logga in">
             <h1 className={styles.title}>Logga in</h1>
+            <p className={styles.subtitle}>Logga in pa ditt konto i Trainly</p>
 
             <form className={styles.form} onSubmit={onSubmit}>
-              <label className={styles.srOnly} htmlFor="username">
-                Användarnamn
+              <label className={styles.srOnly} htmlFor="email">
+                Email
               </label>
               <div className={styles.inputWrap}>
                 <input
-                  id="username"
+                  id="email"
                   className={styles.input}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  autoComplete="username"
-                  placeholder="Användarnamn"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={clearSelection}
+                  autoComplete="email"
+                  placeholder="Email"
                   required
                 />
                 <span className={styles.inputIcon} aria-hidden>
@@ -65,7 +95,7 @@ export default function Login() {
                 </span>
               </div>
 
-              <label className={styles.label} htmlFor="password">
+              <label className={styles.srOnly} htmlFor="password">
                 Lösenord
               </label>
               <div className={styles.inputWrap}>
@@ -75,7 +105,8 @@ export default function Login() {
                   type={showPw ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="new-password"
+                  onFocus={clearSelection}
+                  autoComplete="current-password"
                   placeholder="Lösenord"
                   required
                 />
@@ -83,7 +114,7 @@ export default function Login() {
                   type="button"
                   className={styles.eyeBtn}
                   onClick={() => setShowPw((v) => !v)}
-                  aria-label={showPw ? "Dölj lösenord" : "Visa lösenord"}
+                  aria-label={showPw ? "Dolj losenord" : "Visa losenord"}
                 >
                   👁
                 </button>
@@ -92,13 +123,13 @@ export default function Login() {
               {error ? <div className={styles.error}>{error}</div> : null}
 
               <button className={styles.submit} disabled={loading}>
-                {loading ? "Loggar in…" : "Logga in"}
+                {loading ? "Loggar in..." : "Logga in"}
               </button>
             </form>
 
             <div className={styles.links}>
               <Link href="/auth/register">Registrera dig</Link>
-              <Link href="/auth/forgot">Glömt lösenord?</Link>
+              <Link href="/auth/forgot">Glomt losenord?</Link>
             </div>
           </section>
         </main>

@@ -1,29 +1,24 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import styles from "./Hero.module.css";
 import { DogClubIcon, CoursesIcon, TrophyIcon, VetIcon, ShoppingIcon, } from "../icons/NavIcons";
+import LogoLink from "../brand/LogoLink";
+import Image from "next/image";
 
 export default function Hero() {
   return (
     <main className={styles.main}>
       <div className={styles.topRow}>
         <div className={styles.brand}>
-          <Image
-            src="/Trainlylogo.png"
-            alt="Trainly"
-            width={170}
-            height={70}
-            priority
-          />
+          <LogoLink width={170} height={70} />
         </div>
 
         <div className={styles.topActions}>
           <Link href="/auth/login" className={styles.topLink}>
             Logga in
           </Link>
-          <Link href="/signup" className={styles.topButton}>
+          <Link href="/auth/register" className={styles.topButton}>
             Skapa konto
           </Link>
         </div>
@@ -45,10 +40,10 @@ export default function Hero() {
     </p>
 
     <div className={styles.actions}>
-      <Link href="/signup" className={styles.primary}>
+      <Link href="/auth/register" className={styles.primary}>
         Skapa konto
       </Link>
-      <Link href="/login" className={styles.ghost}>
+      <Link href="/auth/login" className={styles.ghost}>
         Logga in
       </Link>
     </div>

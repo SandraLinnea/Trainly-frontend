@@ -1,22 +1,38 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { getApiUrl } from "../../lib/api";
+import LogoLink from "../brand/LogoLink";
 import styles from "./Header.module.css";
 
 export default function Header() {
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    if (loggingOut) return;
+
+    setLoggingOut(true);
+
+    try {
+      await fetch(getApiUrl("/api/auth/logout"), {
+        method: "POST",
+        credentials: "include",
+      });
+    } finally {
+      router.replace("/");
+      router.refresh();
+      setLoggingOut(false);
+    }
+  }
+
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
-        <Link href="/home" aria-label="Trainly hem">
-          <Image
-            src="/Trainlylogo.png"
-            alt="Trainly"
-            width={150}
-            height={56}
-            priority
-          />
-        </Link>
+        <LogoLink width={170} height={64} />
       </div>
 
       <nav className={styles.actions} aria-label="Huvudnavigation">
@@ -30,14 +46,19 @@ export default function Header() {
           Mina hundar
         </Link>
         <Link href="/friends" className={styles.link}>
-          Vänner
+          Vanner
         </Link>
       </nav>
 
       <div className={styles.actions}>
-        <Link href="/auth/logout" className={styles.button}>
-          Logga ut
-        </Link>
+        <button
+          type="button"
+          className={styles.button}
+          onClick={handleLogout}
+          disabled={loggingOut}
+        >
+          {loggingOut ? "Loggar ut..." : "Logga ut"}
+        </button>
       </div>
     </header>
   );

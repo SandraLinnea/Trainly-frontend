@@ -1,14 +1,16 @@
 .page {
+  width: 100%;
   min-height: 100vh;
   color: rgba(255, 255, 255, 0.92);
   background-image: url("/landing-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  overflow-x: hidden;
 }
 
 .shell {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 36px 28px 28px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
