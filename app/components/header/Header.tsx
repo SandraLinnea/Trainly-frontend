@@ -2,13 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { getApiUrl } from "../../lib/api";
 import LogoLink from "../brand/LogoLink";
 import styles from "./Header.module.css";
 
+function navClass(baseClass: string, activeClass: string, active: boolean) {
+  return active ? `${baseClass} ${activeClass}` : baseClass;
+}
+
 export default function Header() {
+  const pathname = usePathname();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -36,16 +41,32 @@ export default function Header() {
       </div>
 
       <nav className={styles.actions} aria-label="Huvudnavigation">
-        <Link href="/logbook" className={styles.link} prefetch={false}>
+        <Link
+          href="/logbook"
+          className={navClass(styles.link, styles.active, pathname === "/logbook")}
+          prefetch={false}
+        >
           Dagbok
         </Link>
-        <Link href="/calendar" className={styles.link} prefetch={false}>
+        <Link
+          href="/calendar"
+          className={navClass(styles.link, styles.active, pathname === "/calendar")}
+          prefetch={false}
+        >
           Kalender
         </Link>
-        <Link href="/dogs" className={styles.link} prefetch={false}>
+        <Link
+          href="/dogs"
+          className={navClass(styles.link, styles.active, pathname === "/dogs")}
+          prefetch={false}
+        >
           Mina hundar
         </Link>
-        <Link href="/friends" className={styles.link} prefetch={false}>
+        <Link
+          href="/friends"
+          className={navClass(styles.link, styles.active, pathname === "/friends")}
+          prefetch={false}
+        >
           Vanner
         </Link>
       </nav>

@@ -18,7 +18,7 @@ type NavItem = {
 
 const items: NavItem[] = [
   { href: "/courses", label: "Kurser", Icon: CoursesIcon },
-  { href: "/competitions", label: "SBK Tavling", Icon: TrophyIcon },
+  { href: "/competitions", label: "SBK Tävling", Icon: TrophyIcon },
   { href: "/shopping", label: "Shopping", Icon: ShoppingIcon },
   {
     href: "https://brukshundklubben.se/om-oss/",
@@ -26,7 +26,7 @@ const items: NavItem[] = [
     Icon: DogClubIcon,
     external: true,
   },
-  { href: "/vets", label: "Veterinar", Icon: VetIcon },
+  { href: "/vets", label: "Veterinär", Icon: VetIcon },
 ];
 
 export default function AsideNav() {
