@@ -1,24 +1,96 @@
+"use client";
+
+import { useState } from "react";
 import AsideNav from "../nav/AsideNav";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import AddDogModal, { NewDogFormData } from "./AddDogModal";
+import DogDetailsModal, { DogCard } from "./DogDetailsModal";
 import styles from "./DogsPage.module.css";
 
-const dogs = [
+const initialDogs: DogCard[] = [
   {
+    id: "perry",
     name: "Perry",
     breed: "Beagle",
-    age: "4 ar",
+    age: "4 år",
+    height: "41",
+    weight: "14",
+    registrationNumber: "SE12345/2022",
+    imageSrc: "/images/Playingdog.jpg",
     imagePosition: "center 38%",
   },
   {
+    id: "bella",
     name: "Bella",
     breed: "Border Collie",
-    age: "2 ar",
+    age: "2 år",
+    height: "53",
+    weight: "18",
+    registrationNumber: "SE54321/2024",
+    imageSrc: "/images/Playingdog.jpg",
     imagePosition: "center 45%",
   },
 ];
 
 export default function DogsPage() {
+  const [dogs, setDogs] = useState(initialDogs);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDog, setSelectedDog] = useState<DogCard | null>(null);
+  const [editingDog, setEditingDog] = useState<DogCard | null>(null);
+
+  const handleAddDog = (dog: NewDogFormData) => {
+    if (editingDog) {
+      const updatedDog: DogCard = {
+        ...editingDog,
+        name: dog.name,
+        breed: dog.breed,
+        age: dog.age,
+        height: dog.height,
+        weight: dog.weight,
+        registrationNumber: dog.registrationNumber,
+        imageSrc: dog.imageSrc,
+      };
+
+      setDogs((current) =>
+        current.map((entry) => (entry.id === editingDog.id ? updatedDog : entry)),
+      );
+      setSelectedDog(updatedDog);
+      setEditingDog(null);
+      setIsModalOpen(false);
+      return;
+    }
+
+    setDogs((current) => {
+      const newDog: DogCard = {
+        id: crypto.randomUUID(),
+        name: dog.name,
+        breed: dog.breed,
+        age: dog.age,
+        height: dog.height,
+        weight: dog.weight,
+        registrationNumber: dog.registrationNumber,
+        imageSrc: dog.imageSrc,
+        imagePosition: "center center",
+      };
+
+      return [...current, newDog];
+    });
+
+    setIsModalOpen(false);
+  };
+
+  const handleCloseAddModal = () => {
+    setEditingDog(null);
+    setIsModalOpen(false);
+  };
+
+  const handleEditDog = (dog: DogCard) => {
+    setSelectedDog(null);
+    setEditingDog(dog);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.shell}>
@@ -31,10 +103,18 @@ export default function DogsPage() {
 
               <div className={styles.grid}>
                 {dogs.map((dog) => (
-                  <article key={dog.name} className={styles.card}>
+                  <button
+                    key={dog.id}
+                    className={styles.card}
+                    type="button"
+                    onClick={() => setSelectedDog(dog)}
+                  >
                     <div
                       className={styles.cardImage}
-                      style={{ backgroundPosition: dog.imagePosition }}
+                      style={{
+                        backgroundImage: `url("${dog.imageSrc}")`,
+                        backgroundPosition: dog.imagePosition,
+                      }}
                       aria-hidden
                     />
 
@@ -45,15 +125,16 @@ export default function DogsPage() {
                       </div>
                       <span className={styles.cardAge}>{dog.age}</span>
                     </div>
-                  </article>
+                  </button>
                 ))}
               </div>
 
-              <button className={styles.addButton} type="button">
-                <span className={styles.plus} aria-hidden>
-                  +
-                </span>
-                Lagg till hund
+              <button
+                className={styles.addButton}
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Lägg till hund
               </button>
             </section>
 
@@ -65,6 +146,19 @@ export default function DogsPage() {
 
         <Footer />
       </div>
+
+      <AddDogModal
+        open={isModalOpen}
+        onClose={handleCloseAddModal}
+        onSave={handleAddDog}
+        initialData={editingDog}
+      />
+
+      <DogDetailsModal
+        dog={selectedDog}
+        onClose={() => setSelectedDog(null)}
+        onEdit={handleEditDog}
+      />
     </div>
   );
 }

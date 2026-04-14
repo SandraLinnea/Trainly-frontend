@@ -16,13 +16,12 @@ export default function LandingHome() {
                 <div className={styles.heroImage} aria-hidden />
 
                 <div className={styles.heroOverlay}>
-                  <h1 className={styles.heroTitle}>Valkommen tillbaka.</h1>
 
                   <button className={styles.primaryBtn} type="button">
                     <span className={styles.plus} aria-hidden>
                       +
                     </span>
-                    Lagg till pass
+                    Lägg till pass
                   </button>
                 </div>
               </div>

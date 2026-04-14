@@ -1,0 +1,546 @@
+.page {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(243, 239, 233, 0.9), rgba(235, 231, 224, 0.92)),
+    url("/images/HeaderAndFooter.png") center/cover no-repeat;
+}
+
+.shell {
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: rgba(252, 249, 244, 0.92);
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  padding: 2.2rem 2rem 1.6rem;
+  background:
+    linear-gradient(180deg, rgba(251, 247, 243, 0.96), rgba(247, 244, 239, 0.96)),
+    url("/images/Background.png") center/cover no-repeat;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(260px, 1.02fr);
+  gap: 1.35rem;
+  align-items: start;
+}
+
+.content {
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+}
+
+.topLine {
+  height: 1px;
+  background: rgba(78, 74, 68, 0.14);
+  margin: 0 0 0.25rem;
+  width: min(100%, 1036px);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 760px 260px;
+  gap: 0;
+  align-items: start;
+  justify-content: center;
+  width: min(100%, 1036px);
+}
+
+.calendarCard,
+.nextCard {
+  box-sizing: border-box;
+  border-radius: 18px;
+  border: 1px solid rgba(71, 73, 67, 0.1);
+  background: rgba(255, 252, 248, 0.76);
+  box-shadow: 0 18px 40px rgba(40, 34, 28, 0.06);
+}
+
+.calendarCard {
+  width: 680px;
+  max-width: 100%;
+  padding: 0.92rem;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.monthControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.monthStepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12rem;
+}
+
+.addButton {
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  color: #36503a;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 0.4rem 0;
+  cursor: pointer;
+}
+
+.footerActions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.85rem;
+}
+
+.kicker {
+  margin: 0 0 0.25rem;
+  color: #7a7269;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: #24211e;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.monthBadge {
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(70, 95, 72, 0.08);
+  background: rgba(70, 95, 72, 0.1);
+  color: #37533a;
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.monthButton {
+  width: 24px;
+  height: 24px;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  color: #36503a;
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background-color 140ms ease;
+}
+
+.monthButton:hover {
+  transform: translateY(-1px);
+  background: transparent;
+}
+
+.weekdays,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.weekdays {
+  margin-bottom: 0.55rem;
+}
+
+.weekday {
+  color: #6a655f;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.emptyCell,
+.dayCell {
+  min-height: 58px;
+  border-radius: 14px;
+}
+
+.emptyCell {
+  background: transparent;
+}
+
+.dayCell {
+  position: relative;
+  display: grid;
+  align-content: start;
+  padding: 0.68rem;
+  border: 1px solid rgba(88, 88, 81, 0.08);
+  background: rgba(250, 247, 242, 0.72);
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.dayCell:hover {
+  transform: translateY(-1px);
+  border-color: rgba(65, 90, 118, 0.18);
+  box-shadow: 0 10px 24px rgba(40, 34, 28, 0.08);
+  z-index: 2;
+}
+
+.dayNumber {
+  color: #35312d;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.bookedDay {
+  background: linear-gradient(180deg, rgba(92, 128, 99, 0.18), rgba(255, 252, 248, 0.92));
+  border-color: rgba(78, 112, 83, 0.16);
+}
+
+.today {
+  border: 2px solid #4b7a51;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 251, 246, 0.9),
+    0 0 0 3px rgba(75, 122, 81, 0.12);
+}
+
+.eventDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #446f4a;
+  box-shadow: 0 0 0 6px rgba(68, 111, 74, 0.12);
+}
+
+.eventDots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: auto;
+  align-items: center;
+}
+
+.tooltip {
+  position: absolute;
+  left: 50%;
+  min-width: 170px;
+  max-width: 220px;
+  bottom: calc(100% + 0.45rem);
+  display: grid;
+  gap: 0.14rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  background: rgba(34, 39, 35, 0.94);
+  color: #f8f5ef;
+  box-shadow: 0 16px 36px rgba(22, 22, 19, 0.24);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(6px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+  z-index: 4;
+}
+
+.tooltip strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.tooltip span {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.tooltipEvent + .tooltipEvent {
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.bookedDay:hover .tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.nextCard {
+  display: grid;
+  width: 260px;
+  max-width: 100%;
+  gap: 1rem;
+  padding: 0.9rem 0.9rem 0.95rem;
+  margin-left: 0;
+}
+
+.nextLabel {
+  margin: 0;
+  color: #7a7269;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nextTitle {
+  margin: -0.25rem 0 0;
+  color: #24211e;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.nextDetails {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+}
+
+.nextRow {
+  display: grid;
+  gap: 0.18rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(248, 244, 238, 0.84);
+  border: 1px solid rgba(92, 90, 84, 0.08);
+}
+
+.nextRow dt {
+  color: #746d64;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.nextRow dd {
+  margin: 0;
+  color: #302d29;
+  font-size: 0.96rem;
+  font-weight: 500;
+}
+
+.nextHint {
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  background: rgba(66, 91, 70, 0.08);
+  color: #425745;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.aside {
+  display: grid;
+  min-height: 100%;
+}
+
+@media (max-width: 1366px) {
+  .main {
+    padding: 1.6rem 1.4rem 1.2rem;
+  }
+
+  .inner {
+    grid-template-columns: minmax(0, 2.7fr) minmax(240px, 0.95fr);
+    gap: 1rem;
+  }
+
+  .topLine,
+  .layout {
+    width: min(100%, 860px);
+  }
+
+  .layout {
+    grid-template-columns: 590px 220px;
+    gap: 0.2rem;
+  }
+
+  .calendarCard {
+    width: 590px;
+    padding: 0.76rem;
+  }
+
+  .nextCard {
+    width: 220px;
+    gap: 0.7rem;
+    padding: 0.72rem 0.72rem 0.78rem;
+    margin-left: 0;
+  }
+
+  .title {
+    font-size: 1.72rem;
+  }
+
+  .monthBadge {
+    padding: 0.55rem 0.82rem;
+    font-size: 0.84rem;
+  }
+
+  .monthButton {
+    width: 22px;
+    height: 22px;
+  }
+
+  .weekdays,
+  .grid {
+    gap: 0.34rem;
+  }
+
+  .emptyCell,
+  .dayCell {
+    min-height: 46px;
+  }
+
+  .dayCell {
+    padding: 0.42rem;
+  }
+
+  .dayNumber {
+    font-size: 0.78rem;
+  }
+
+  .eventDot {
+    width: 8px;
+    height: 8px;
+    box-shadow: 0 0 0 4px rgba(68, 111, 74, 0.12);
+  }
+
+  .tooltip {
+    min-width: 148px;
+    max-width: 188px;
+    padding: 0.5rem 0.58rem;
+  }
+
+  .tooltip strong {
+    font-size: 0.84rem;
+  }
+
+  .tooltip span {
+    font-size: 0.72rem;
+  }
+
+  .nextTitle {
+    font-size: 1.2rem;
+  }
+
+  .nextDetails {
+    gap: 0.65rem;
+  }
+
+  .nextRow {
+    padding: 0.58rem 0.66rem;
+  }
+
+  .nextRow dt {
+    font-size: 0.74rem;
+  }
+
+  .nextRow dd {
+    font-size: 0.82rem;
+  }
+
+  .nextHint {
+    padding: 0.66rem 0.72rem;
+    font-size: 0.74rem;
+  }
+}
+
+@media (max-height: 820px) and (min-width: 961px) {
+  .main {
+    padding-top: 1.3rem;
+  }
+
+  .layout {
+    grid-template-columns: 540px 210px;
+  }
+
+  .calendarCard {
+    width: 540px;
+  }
+
+  .nextCard {
+    width: 210px;
+  }
+
+  .emptyCell,
+  .dayCell {
+    min-height: 42px;
+  }
+
+  .dayCell {
+    padding: 0.36rem;
+  }
+
+  .dayNumber {
+    font-size: 0.74rem;
+  }
+}
+
+@media (max-width: 1120px) {
+  .layout {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .calendarCard {
+    width: 100%;
+  }
+
+  .nextCard {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 960px) {
+  .main {
+    padding: 1rem;
+  }
+
+  .inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .calendarHeader {
+    display: grid;
+    align-items: start;
+  }
+
+  .monthControls {
+    gap: 0.35rem;
+  }
+
+  .calendarCard {
+    padding: 1rem;
+  }
+
+  .weekdays,
+  .grid {
+    gap: 0.38rem;
+  }
+
+  .emptyCell,
+  .dayCell {
+    min-height: 72px;
+  }
+
+  .dayCell {
+    padding: 0.55rem;
+  }
+
+  .tooltip {
+    display: none;
+  }
+}

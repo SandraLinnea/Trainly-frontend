@@ -2,7 +2,7 @@
   flex: 1;
   min-height: calc(100vh - 120px);
   padding: 28px 28px 64px;
-  background-image: url("/Background.png");
+  background-image: url("/images/Background.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

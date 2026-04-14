@@ -107,7 +107,7 @@ export default function Hero() {
 
         <div className={styles.laptopWrap}>
           <Image
-            src="/Laptop.png"
+            src="/images/Laptop.png"
             alt="Trainly forhandsvisning"
             width={820}
             height={520}

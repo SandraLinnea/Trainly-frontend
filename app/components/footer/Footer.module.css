@@ -6,7 +6,7 @@
   padding: 1.25rem 2.2rem;
   background:
     linear-gradient(180deg, rgba(33, 59, 49, 0.8), rgba(42, 68, 57, 0.8)),
-    url("/HeaderAndFooter.png") center/cover no-repeat;
+    url("/images/HeaderAndFooter.png") center/cover no-repeat;
   color: #f3ede4;
 }
 

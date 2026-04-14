@@ -1,0 +1,392 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: rgba(25, 27, 25, 0.4);
+  backdrop-filter: blur(6px);
+}
+
+.modal {
+  width: min(100%, 640px);
+  max-height: min(680px, calc(100dvh - 3rem));
+  overflow-y: auto;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(252, 249, 245, 0.98), rgba(246, 242, 237, 0.98)),
+    url("/images/Background.png") center/cover no-repeat;
+  border: 1px solid rgba(75, 78, 72, 0.12);
+  box-shadow: 0 34px 80px rgba(24, 24, 22, 0.2);
+}
+
+.form {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.2rem 1.25rem 1.3rem;
+}
+
+.editForm {
+  gap: 0.8rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0 0 0.25rem;
+  color: #262420;
+  font-size: clamp(1.45rem, 1.2rem + 1vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.closeButton {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #b8b3ad;
+  cursor: pointer;
+}
+
+.closeButton svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.closeButton:hover {
+  color: #9f9890;
+}
+
+.editLayout {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.editMedia {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.editFields {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.label {
+  color: #302d29;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.input,
+.fileInput {
+  width: 100%;
+  min-width: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(101, 102, 96, 0.14);
+  background: rgba(255, 255, 255, 0.7);
+  color: #2f2c28;
+  font: inherit;
+  padding: 0.8rem 0.95rem;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: #8b887f;
+}
+
+.input:focus,
+.fileInput:focus {
+  outline: none;
+  border-color: rgba(79, 105, 141, 0.45);
+  box-shadow: 0 0 0 4px rgba(100, 128, 167, 0.14);
+}
+
+.unitField {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 84px;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid rgba(101, 102, 96, 0.14);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.unitField .input {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.unit {
+  display: grid;
+  place-items: center;
+  border-left: 1px solid rgba(101, 102, 96, 0.14);
+  color: #5a5751;
+  font-size: 1rem;
+  background: rgba(250, 247, 243, 0.9);
+}
+
+.previewWrap {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.preview {
+  width: 136px;
+  height: 98px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid rgba(90, 91, 85, 0.14);
+  box-shadow: 0 10px 24px rgba(44, 40, 34, 0.08);
+}
+
+.editPreview {
+  width: 100%;
+  height: 155px;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.35rem;
+}
+
+.saveButton {
+  border-radius: 10px;
+  padding: 0.76rem 1.2rem;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
+  border: 1px solid rgba(54, 80, 58, 0.24);
+  background: #36503a;
+  color: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14px 28px rgba(54, 80, 58, 0.18);
+}
+
+.saveButton:hover {
+  background: #2f4632;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 720px) {
+  .overlay {
+    padding: 1rem;
+  }
+
+  .modal {
+    max-height: calc(100vh - 2rem);
+  }
+
+  .form {
+    padding: 1.15rem;
+  }
+
+  .title {
+    font-size: 1.65rem;
+  }
+
+  .editLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+}
+
+@media (max-width: 1366px) and (min-width: 721px) {
+  .overlay {
+    padding: 1rem;
+  }
+
+  .modal {
+    width: min(100%, 560px);
+    max-height: calc(100dvh - 2rem);
+  }
+
+  .form {
+    gap: 0.72rem;
+    padding: 1rem 1rem 1.05rem;
+  }
+
+  .title {
+    font-size: 1.45rem;
+  }
+
+  .editLayout {
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 0.85rem;
+  }
+
+  .row {
+    gap: 0.72rem;
+  }
+
+  .label {
+    font-size: 0.88rem;
+  }
+
+  .input,
+  .fileInput {
+    padding: 0.68rem 0.82rem;
+  }
+
+  .unit {
+    font-size: 0.9rem;
+  }
+
+  .preview {
+    width: 120px;
+    height: 86px;
+  }
+
+  .editPreview {
+    width: 100%;
+    height: 136px;
+  }
+
+  .actions {
+    gap: 0.6rem;
+  }
+
+  .saveButton {
+    padding: 0.68rem 1.05rem;
+  }
+}
+
+@media (max-height: 820px) {
+  .modal {
+    width: min(100%, 590px);
+    max-height: calc(100dvh - 2rem);
+  }
+
+  .form {
+    gap: 0.72rem;
+    padding: 1.05rem 1.1rem 1.1rem;
+  }
+
+  .title {
+    margin-bottom: 0.1rem;
+  }
+
+  .editLayout {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+
+  .row {
+    gap: 0.75rem;
+  }
+
+  .label {
+    font-size: 0.88rem;
+  }
+
+  .input,
+  .fileInput {
+    padding: 0.7rem 0.85rem;
+  }
+
+  .preview {
+    width: 132px;
+    height: 92px;
+  }
+
+  .editPreview {
+    width: 100%;
+    height: 142px;
+  }
+
+  .actions {
+    padding-top: 0.1rem;
+  }
+
+  .saveButton {
+    padding: 0.72rem 1.2rem;
+  }
+}
+
+@media (max-height: 720px) {
+  .overlay {
+    place-items: start center;
+    padding: 0.75rem;
+  }
+
+  .modal {
+    width: min(100%, 550px);
+    max-height: calc(100dvh - 1.5rem);
+  }
+
+  .form {
+    gap: 0.6rem;
+    padding: 0.95rem 1rem 1rem;
+  }
+
+  .title {
+    font-size: 1.35rem;
+  }
+
+  .editLayout {
+    grid-template-columns: 170px minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .label {
+    font-size: 0.84rem;
+  }
+
+  .input,
+  .fileInput {
+    padding: 0.62rem 0.78rem;
+  }
+
+  .unit {
+    font-size: 0.92rem;
+  }
+
+  .preview {
+    width: 116px;
+    height: 80px;
+  }
+
+  .editPreview {
+    width: 100%;
+    height: 126px;
+  }
+
+  .saveButton {
+    padding: 0.66rem 1rem;
+  }
+}

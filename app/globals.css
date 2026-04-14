@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap");
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -20,5 +22,5 @@ body {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "National Park", Arial, Helvetica, sans-serif;
 }

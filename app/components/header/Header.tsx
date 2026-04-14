@@ -67,7 +67,7 @@ export default function Header() {
           className={navClass(styles.link, styles.active, pathname === "/friends")}
           prefetch={false}
         >
-          Vanner
+          Vänner
         </Link>
       </nav>
 

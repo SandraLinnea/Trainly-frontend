@@ -2,7 +2,7 @@
   min-height: 100vh;
   background:
     linear-gradient(180deg, rgba(243, 239, 233, 0.9), rgba(235, 231, 224, 0.92)),
-    url("/HeaderAndFooter.png") center/cover no-repeat;
+    url("/images/HeaderAndFooter.png") center/cover no-repeat;
 }
 
 .shell {
@@ -19,7 +19,7 @@
   padding: 2.2rem 2rem 1.6rem;
   background:
     linear-gradient(180deg, rgba(251, 247, 243, 0.96), rgba(247, 244, 239, 0.96)),
-    url("/Background.png") center/cover no-repeat;
+    url("/images/Background.png") center/cover no-repeat;
 }
 
 .inner {
@@ -32,18 +32,21 @@
 .content {
   display: grid;
   gap: 1rem;
+  justify-items: center;
 }
 
 .topLine {
   height: 1px;
   background: rgba(78, 74, 68, 0.14);
   margin: 0 0 0.25rem;
+  width: min(100%, 1036px);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  width: min(100%, 1036px);
 }
 
 .card {
@@ -52,11 +55,23 @@
   background: rgba(255, 252, 248, 0.88);
   border: 1px solid rgba(68, 70, 64, 0.12);
   box-shadow: 0 18px 40px rgba(40, 34, 28, 0.06);
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 44px rgba(40, 34, 28, 0.1);
+  border-color: rgba(64, 84, 110, 0.16);
 }
 
 .cardImage {
   height: 250px;
-  background-image: url("/Playingdog.jpg");
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -101,6 +116,8 @@
   font-size: 0.95rem;
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(46, 42, 36, 0.04);
+  width: fit-content;
+  margin-left: max(0px, calc((100% - 1036px) / 2));
 }
 
 .plus {
@@ -124,5 +141,9 @@
 
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .addButton {
+    margin-left: 0;
   }
 }
