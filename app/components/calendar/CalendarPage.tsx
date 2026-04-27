@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import AsideNav from "../nav/AsideNav";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import CloseIcon from "../icons/CloseIcon";
 import AddActivityModal, { CalendarEvent } from "./AddActivityModal";
 import styles from "./CalendarPage.module.css";
 
@@ -118,19 +119,30 @@ const initialEvents: CalendarEvent[] = [
   },
 ];
 
-function getMonthLabel(monthIndex: number, year: number) {
+function getMonthLabel(
+  monthIndex: number,
+  year: number
+) {
   return `${monthNames[monthIndex]} ${year}`;
 }
 
-function getWeekdayOffset(year: number, monthIndex: number) {
+function getWeekdayOffset(
+  year: number,
+  monthIndex: number
+) {
   const jsDay = new Date(year, monthIndex, 1).getDay();
   return (jsDay + 6) % 7;
+}
+
+function getEventDateLabel(event: CalendarEvent) {
+  return `${event.day} ${monthNames[event.month].toLowerCase()} ${event.year}`;
 }
 
 export default function CalendarPage() {
   const [visibleMonth, setVisibleMonth] = useState({ year: 2026, month: 3 });
   const [events, setEvents] = useState(initialEvents);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isActivityListOpen, setIsActivityListOpen] = useState(false);
 
   const monthEvents = useMemo(
     () =>
@@ -311,6 +323,13 @@ export default function CalendarPage() {
                     >
                       Lagg till aktivitet
                     </button>
+                    <button
+                      className={styles.viewAllButton}
+                      type="button"
+                      onClick={() => setIsActivityListOpen(true)}
+                    >
+                      Se alla
+                    </button>
                   </div>
                 </section>
 
@@ -321,10 +340,7 @@ export default function CalendarPage() {
                   <dl className={styles.nextDetails}>
                     <div className={styles.nextRow}>
                       <dt>Datum</dt>
-                      <dd>
-                        {nextActivity.day} {monthNames[nextActivity.month].toLowerCase()}{" "}
-                        {nextActivity.year}
-                      </dd>
+                      <dd>{getEventDateLabel(nextActivity)}</dd>
                     </div>
                     <div className={styles.nextRow}>
                       <dt>Tid</dt>
@@ -359,6 +375,58 @@ export default function CalendarPage() {
         defaultYear={visibleMonth.year}
         defaultMonth={visibleMonth.month}
       />
+
+      {isActivityListOpen ? (
+        <div
+          className={styles.activityOverlay}
+          onClick={() => setIsActivityListOpen(false)}
+          role="presentation"
+        >
+          <div
+            className={styles.activityModal}
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="activity-list-title"
+          >
+            <div className={styles.activityModalHeader}>
+              <h2 id="activity-list-title" className={styles.activityModalTitle}>
+                Alla aktiviteter
+              </h2>
+
+              <button
+                className={styles.activityCloseButton}
+                type="button"
+                onClick={() => setIsActivityListOpen(false)}
+                aria-label="Stang"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <div className={styles.activityList}>
+              {events.map((event, index) => (
+                <article
+                  className={styles.activityItem}
+                  key={`${event.year}-${event.month}-${event.day}-${event.time}-${event.title}-${index}`}
+                >
+                  <div>
+                    <h3 className={styles.activityTitle}>{event.title}</h3>
+                    <p className={styles.activityMeta}>
+                      {getEventDateLabel(event)} · {event.time}
+                    </p>
+                  </div>
+
+                  <div className={styles.activityDetails}>
+                    <span>{event.type}</span>
+                    <span>{event.location}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

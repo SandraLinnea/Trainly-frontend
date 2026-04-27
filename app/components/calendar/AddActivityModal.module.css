@@ -11,7 +11,7 @@
 
 .modal {
   width: min(100%, 520px);
-  border-radius: 18px;
+  border-radius: 5px;
   background:
     linear-gradient(180deg, rgba(252, 249, 245, 0.98), rgba(246, 242, 237, 0.98)),
     url("/images/Background.png") center/cover no-repeat;
@@ -85,7 +85,7 @@
 .input {
   width: 100%;
   min-width: 0;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 1px solid rgba(101, 102, 96, 0.14);
   background: rgba(255, 255, 255, 0.7);
   color: #2f2c28;
@@ -107,7 +107,7 @@
 }
 
 .saveButton {
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 0.76rem 1.1rem;
   font: inherit;
   cursor: pointer;
