@@ -8,7 +8,7 @@ import CloseIcon from "../icons/CloseIcon";
 export type NewDogFormData = {
   name: string;
   breed: string;
-  age: string;
+  birthDate: string;
   height: string;
   weight: string;
   registrationNumber: string;
@@ -19,13 +19,14 @@ type AddDogModalProps = {
   open: boolean;
   onClose: () => void;
   onSave: (dog: NewDogFormData) => void;
+  onDelete?: () => void;
   initialData?: DogCard | null;
 };
 
 const initialForm = {
   name: "",
   breed: "",
-  age: "",
+  birthDate: "",
   height: "",
   weight: "",
   registrationNumber: "",
@@ -35,10 +36,12 @@ export default function AddDogModal({
   open,
   onClose,
   onSave,
+  onDelete,
   initialData = null,
 }: AddDogModalProps) {
   const [form, setForm] = useState(initialForm);
   const [previewUrl, setPreviewUrl] = useState<string>("");
+  const todayDate = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     if (open) {
@@ -47,7 +50,7 @@ export default function AddDogModal({
           ? {
               name: initialData.name,
               breed: initialData.breed,
-              age: initialData.age,
+              birthDate: initialData.birthDate,
               height: initialData.height,
               weight: initialData.weight,
               registrationNumber: initialData.registrationNumber,
@@ -58,13 +61,15 @@ export default function AddDogModal({
       return;
     }
 
-    if (previewUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(previewUrl);
-    }
-
     setForm(initialForm);
-    setPreviewUrl("");
-  }, [initialData, open, previewUrl]);
+    setPreviewUrl((current) => {
+      if (current.startsWith("blob:")) {
+        URL.revokeObjectURL(current);
+      }
+
+      return "";
+    });
+  }, [initialData, open]);
 
   useEffect(() => {
     return () => {
@@ -104,10 +109,12 @@ export default function AddDogModal({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const birthDate = form.birthDate > todayDate ? todayDate : form.birthDate;
+
     onSave({
       name: form.name.trim(),
       breed: form.breed.trim(),
-      age: form.age.trim() || "-",
+      birthDate,
       height: form.height.trim(),
       weight: form.weight.trim(),
       registrationNumber: form.registrationNumber.trim(),
@@ -192,13 +199,14 @@ export default function AddDogModal({
 
                 <div className={styles.row}>
                   <label className={styles.field}>
-                    <span className={styles.label}>Ålder</span>
+                    <span className={styles.label}>Födelsedatum</span>
                     <input
                       className={styles.input}
-                      name="age"
-                      value={form.age}
+                      type="date"
+                      name="birthDate"
+                      value={form.birthDate}
+                      max={todayDate}
                       onChange={handleChange}
-                      placeholder="Ange ålder"
                     />
                   </label>
 
@@ -271,13 +279,14 @@ export default function AddDogModal({
 
               <div className={styles.row}>
                 <label className={styles.field}>
-                  <span className={styles.label}>ålder</span>
+                  <span className={styles.label}>Födelsedatum</span>
                   <input
                     className={styles.input}
-                    name="age"
-                    value={form.age}
+                    type="date"
+                    name="birthDate"
+                    value={form.birthDate}
+                    max={todayDate}
                     onChange={handleChange}
-                    placeholder="Ange ålder"
                   />
                 </label>
 
@@ -342,6 +351,16 @@ export default function AddDogModal({
           )}
 
           <div className={styles.actions}>
+            {initialData && onDelete ? (
+              <button
+                className={styles.deleteButton}
+                type="button"
+                onClick={onDelete}
+              >
+                Ta bort hund
+              </button>
+            ) : null}
+
             <button className={styles.saveButton} type="submit">
               {initialData ? "Spara andringar" : "Spara hund"}
             </button>

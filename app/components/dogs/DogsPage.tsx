@@ -5,7 +5,7 @@ import AsideNav from "../nav/AsideNav";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
 import AddDogModal, { NewDogFormData } from "./AddDogModal";
-import DogDetailsModal, { DogCard } from "./DogDetailsModal";
+import DogDetailsModal, { DogCard, getDogAgeLabel } from "./DogDetailsModal";
 import styles from "./DogsPage.module.css";
 
 const initialDogs: DogCard[] = [
@@ -13,7 +13,7 @@ const initialDogs: DogCard[] = [
     id: "perry",
     name: "Perry",
     breed: "Beagle",
-    age: "4 år",
+    birthDate: "2022-04-27",
     height: "41",
     weight: "14",
     registrationNumber: "SE12345/2022",
@@ -24,7 +24,7 @@ const initialDogs: DogCard[] = [
     id: "bella",
     name: "Bella",
     breed: "Border Collie",
-    age: "2 år",
+    birthDate: "2024-04-27",
     height: "53",
     weight: "18",
     registrationNumber: "SE54321/2024",
@@ -45,7 +45,7 @@ export default function DogsPage() {
         ...editingDog,
         name: dog.name,
         breed: dog.breed,
-        age: dog.age,
+        birthDate: dog.birthDate,
         height: dog.height,
         weight: dog.weight,
         registrationNumber: dog.registrationNumber,
@@ -66,7 +66,7 @@ export default function DogsPage() {
         id: crypto.randomUUID(),
         name: dog.name,
         breed: dog.breed,
-        age: dog.age,
+        birthDate: dog.birthDate,
         height: dog.height,
         weight: dog.weight,
         registrationNumber: dog.registrationNumber,
@@ -89,6 +89,17 @@ export default function DogsPage() {
     setSelectedDog(null);
     setEditingDog(dog);
     setIsModalOpen(true);
+  };
+
+  const handleDeleteDog = () => {
+    if (!editingDog) {
+      return;
+    }
+
+    setDogs((current) => current.filter((dog) => dog.id !== editingDog.id));
+    setSelectedDog(null);
+    setEditingDog(null);
+    setIsModalOpen(false);
   };
 
   return (
@@ -123,7 +134,7 @@ export default function DogsPage() {
                         <h2 className={styles.cardTitle}>{dog.name}</h2>
                         <p className={styles.cardMeta}>{dog.breed}</p>
                       </div>
-                      <span className={styles.cardAge}>{dog.age}</span>
+                      <span className={styles.cardAge}>{getDogAgeLabel(dog.birthDate)}</span>
                     </div>
                   </button>
                 ))}
@@ -151,6 +162,7 @@ export default function DogsPage() {
         open={isModalOpen}
         onClose={handleCloseAddModal}
         onSave={handleAddDog}
+        onDelete={handleDeleteDog}
         initialData={editingDog}
       />
 
