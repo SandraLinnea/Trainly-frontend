@@ -37,6 +37,25 @@ export function DogClubIcon({ size = 20, ...props }: IconProps) {
   );
 }
 
+export function DogIcon({ size = 20, ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      {...props}
+    >
+      <ellipse cx="8.2" cy="6.5" rx="1.9" ry="3.1" transform="rotate(-8 8.2 6.5)" />
+      <ellipse cx="15.8" cy="6.5" rx="1.9" ry="3.1" transform="rotate(8 15.8 6.5)" />
+      <ellipse cx="5" cy="11.2" rx="2" ry="2.8" transform="rotate(-24 5 11.2)" />
+      <ellipse cx="19" cy="11.2" rx="2" ry="2.8" transform="rotate(24 19 11.2)" />
+      <path d="M8.1 14.3c.6-2.5 2-4.1 3.9-4.1s3.3 1.6 3.9 4.1c.3 1.1 1.7 1.7 2 3.5.4 2.2-1.3 3.7-3.4 3.3-1.1-.2-1.6-.8-2.5-.8s-1.4.6-2.5.8c-2.1.4-3.8-1.1-3.4-3.3.3-1.8 1.7-2.4 2-3.5z" />
+    </svg>
+  );
+}
+
 export function TrophyIcon({ size = 20, ...props }: IconProps) {
   return (
     <svg {...baseProps(size)} {...props}>

@@ -4,6 +4,7 @@ import styles from "./AsideNav.module.css";
 import {
   CoursesIcon,
   DogClubIcon,
+  DogIcon,
   ShoppingIcon,
   TrophyIcon,
   VetIcon,
@@ -17,6 +18,7 @@ type NavItem = {
 };
 
 const items: NavItem[] = [
+  { href: "/clubs", label: "Brukshundsklubbar", Icon: DogIcon },
   { href: "/courses", label: "Kurser", Icon: CoursesIcon },
   { href: "/competitions", label: "SBK Tävling", Icon: TrophyIcon },
   { href: "/shopping", label: "Shopping", Icon: ShoppingIcon },
