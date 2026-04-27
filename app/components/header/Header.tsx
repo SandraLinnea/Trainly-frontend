@@ -8,7 +8,11 @@ import { getApiUrl } from "../../lib/api";
 import LogoLink from "../brand/LogoLink";
 import styles from "./Header.module.css";
 
-function navClass(baseClass: string, activeClass: string, active: boolean) {
+function navClass(
+  baseClass: string,
+  activeClass: string,
+  active: boolean
+) {
   return active ? `${baseClass} ${activeClass}` : baseClass;
 }
 
@@ -37,7 +41,12 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
-        <LogoLink width={310} height={128} />
+        <LogoLink
+          width={175}
+          height={73}
+          className={styles.logoLink}
+          imageClassName={styles.logo}
+        />
       </div>
 
       <nav className={styles.actions} aria-label="Huvudnavigation">

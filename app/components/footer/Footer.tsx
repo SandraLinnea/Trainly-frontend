@@ -7,7 +7,6 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.left}>
-        <span className={styles.brand}>Trainly</span>
         <span className={styles.copy}>© 2026 Trainly</span>
       </div>
 

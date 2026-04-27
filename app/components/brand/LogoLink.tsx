@@ -10,12 +10,14 @@ type LogoLinkProps = {
   width: number;
   height: number;
   className?: string;
+  imageClassName?: string;
 };
 
 export default function LogoLink({
   width,
   height,
   className,
+  imageClassName,
 }: LogoLinkProps) {
   const [href, setHref] = useState("/");
 
@@ -48,11 +50,12 @@ export default function LogoLink({
   return (
     <Link href={href} aria-label="Trainly hem" className={className}>
       <Image
-        src="/images/DogTrainlyLogoTransparent.png"
+        src="/images/DogTrainlyLogo.png"
         alt="Trainly"
         width={width}
         height={height}
         priority
+        className={imageClassName}
       />
     </Link>
   );

@@ -18,26 +18,27 @@
 .headerRow {
   width: 100%;
   max-width: 1180px;
-  padding: 28px 28px 0 116px;
+  padding: 28px 28px 0;
   display: flex;
   align-items: center;
   box-sizing: border-box;
   margin: 0 auto;
-  background-color: none;
+  transform: translateX(calc(-2rem - 4px));
 }
 
 /* Centrerat kort */
 .main {
   display: grid;
-  place-items: center;
-  padding: 24px 0 34px;
+  justify-items: center;
+  align-items: start;
+  padding: calc(8px + 2rem) 0 34px;
 }
 
 .card {
   width: 100%;
   max-width: 450px;
   padding: 50px 50px;
-  border-radius: 18px;
+  border-radius: 5px;
   background: rgba(0, 0, 0, 0.28);
   border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(10px);
@@ -74,7 +75,7 @@
   width: 85%;
   height: 38px;
   padding: 0 52px 0 16px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(0, 0, 0, 0.22);
   color: rgba(255, 255, 255, 0.9);
@@ -119,7 +120,7 @@
   width: 36px;
   height: 36px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 5px;
   background: transparent;
   color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
@@ -131,7 +132,7 @@
 
 .error {
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 5px;
   background: rgba(255, 80, 80, 0.12);
   border: 1px solid rgba(255, 80, 80, 0.25);
   color: rgba(255, 210, 210, 0.95);
@@ -141,7 +142,7 @@
 .submit {
   margin-top: 10px;
   height: 54px;
-  border-radius: 10px;
+  border-radius: 5px;
 
   border: 1px solid rgba(170, 205, 170, 0.35);
   background: rgba(170, 205, 170, 0.22);
@@ -197,6 +198,7 @@
     max-width: none;
     margin: 0;
     padding: 28px 28px 0;
+    transform: none;
   }
 
   .card {

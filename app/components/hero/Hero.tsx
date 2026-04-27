@@ -18,7 +18,7 @@ export default function Hero() {
     <main className={styles.main}>
       <div className={styles.topRow}>
         <div className={styles.brand}>
-          <LogoLink width={360} height={150} />
+          <LogoLink width={180} height={75} />
         </div>
 
         <div className={styles.topActions}>
