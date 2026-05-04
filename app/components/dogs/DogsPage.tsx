@@ -1,83 +1,113 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AsideNav from "../nav/AsideNav";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import { getApiUrl, readApiError } from "../../lib/api";
 import AddDogModal, { NewDogFormData } from "./AddDogModal";
 import DogDetailsModal, { DogCard, getDogAgeLabel } from "./DogDetailsModal";
 import styles from "./DogsPage.module.css";
 
-const initialDogs: DogCard[] = [
-  {
-    id: "perry",
-    name: "Perry",
-    breed: "Beagle",
-    birthDate: "2022-04-27",
-    height: "41",
-    weight: "14",
-    registrationNumber: "SE12345/2022",
-    imageSrc: "/images/Playingdog.jpg",
-    imagePosition: "center 38%",
-  },
-  {
-    id: "bella",
-    name: "Bella",
-    breed: "Border Collie",
-    birthDate: "2024-04-27",
-    height: "53",
-    weight: "18",
-    registrationNumber: "SE54321/2024",
-    imageSrc: "/images/Playingdog.jpg",
-    imagePosition: "center 45%",
-  },
-];
+type DogsResponse = {
+  dogs: DogCard[];
+};
+
+type DogResponse = {
+  dog: DogCard;
+};
 
 export default function DogsPage() {
-  const [dogs, setDogs] = useState(initialDogs);
+  const [dogs, setDogs] = useState<DogCard[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDog, setSelectedDog] = useState<DogCard | null>(null);
   const [editingDog, setEditingDog] = useState<DogCard | null>(null);
 
-  const handleAddDog = (dog: NewDogFormData) => {
-    if (editingDog) {
-      const updatedDog: DogCard = {
-        ...editingDog,
-        name: dog.name,
-        breed: dog.breed,
-        birthDate: dog.birthDate,
-        height: dog.height,
-        weight: dog.weight,
-        registrationNumber: dog.registrationNumber,
-        imageSrc: dog.imageSrc,
-      };
+  useEffect(() => {
+    let active = true;
 
-      setDogs((current) =>
-        current.map((entry) => (entry.id === editingDog.id ? updatedDog : entry)),
-      );
-      setSelectedDog(updatedDog);
-      setEditingDog(null);
-      setIsModalOpen(false);
+    async function loadDogs() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await fetch(getApiUrl("/api/dogs"), {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error(await readApiError(response, "Kunde inte hämta hundar."));
+        }
+
+        const data = (await response.json()) as DogsResponse;
+
+        if (active) {
+          setDogs(data.dogs);
+        }
+      } catch (err) {
+        if (active) {
+          setError(err instanceof Error ? err.message : "Kunde inte hämta hundar.");
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadDogs();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleAddDog = async (dog: NewDogFormData) => {
+    if (saving) {
       return;
     }
 
-    setDogs((current) => {
-      const newDog: DogCard = {
-        id: crypto.randomUUID(),
-        name: dog.name,
-        breed: dog.breed,
-        birthDate: dog.birthDate,
-        height: dog.height,
-        weight: dog.weight,
-        registrationNumber: dog.registrationNumber,
-        imageSrc: dog.imageSrc,
-        imagePosition: "center center",
-      };
+    setSaving(true);
+    setError("");
 
-      return [...current, newDog];
-    });
+    try {
+      const response = await fetch(
+        getApiUrl(editingDog ? `/api/dogs/${editingDog.id}` : "/api/dogs"),
+        {
+          method: editingDog ? "PATCH" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(dog),
+        },
+      );
 
-    setIsModalOpen(false);
+      if (!response.ok) {
+        throw new Error(await readApiError(response, "Kunde inte spara hund."));
+      }
+
+      const data = (await response.json()) as DogResponse;
+
+      if (editingDog) {
+        setDogs((current) =>
+          current.map((entry) => (entry.id === editingDog.id ? data.dog : entry)),
+        );
+        setSelectedDog(data.dog);
+      } else {
+        setDogs((current) => [...current, data.dog]);
+      }
+
+      setEditingDog(null);
+      setIsModalOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunde inte spara hund.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCloseAddModal = () => {
@@ -91,15 +121,33 @@ export default function DogsPage() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteDog = () => {
-    if (!editingDog) {
+  const handleDeleteDog = async () => {
+    if (!editingDog || saving) {
       return;
     }
 
-    setDogs((current) => current.filter((dog) => dog.id !== editingDog.id));
-    setSelectedDog(null);
-    setEditingDog(null);
-    setIsModalOpen(false);
+    setSaving(true);
+    setError("");
+
+    try {
+      const response = await fetch(getApiUrl(`/api/dogs/${editingDog.id}`), {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error(await readApiError(response, "Kunde inte ta bort hund."));
+      }
+
+      setDogs((current) => current.filter((dog) => dog.id !== editingDog.id));
+      setSelectedDog(null);
+      setEditingDog(null);
+      setIsModalOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunde inte ta bort hund.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -111,6 +159,15 @@ export default function DogsPage() {
           <div className={styles.inner}>
             <section className={styles.content}>
               <div className={styles.topLine} aria-hidden />
+
+              {error ? <p className={styles.status}>{error}</p> : null}
+              {loading ? <p className={styles.status}>Hämtar hundar...</p> : null}
+
+              {!loading && dogs.length === 0 ? (
+                <p className={styles.status}>
+                  Du har inte lagt till någon hund än.
+                </p>
+              ) : null}
 
               <div className={styles.grid}>
                 {dogs.map((dog) => (

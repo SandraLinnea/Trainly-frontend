@@ -49,6 +49,18 @@
   width: min(100%, 1036px);
 }
 
+.status {
+  width: min(100%, 1036px);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 1rem;
+  border-radius: 5px;
+  border: 1px solid rgba(68, 70, 64, 0.1);
+  background: rgba(255, 252, 248, 0.78);
+  color: #4b4842;
+  font-size: 0.95rem;
+}
+
 .card {
   overflow: hidden;
   border-radius: 5px;

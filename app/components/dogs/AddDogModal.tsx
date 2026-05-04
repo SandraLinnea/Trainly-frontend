@@ -62,22 +62,8 @@ export default function AddDogModal({
     }
 
     setForm(initialForm);
-    setPreviewUrl((current) => {
-      if (current.startsWith("blob:")) {
-        URL.revokeObjectURL(current);
-      }
-
-      return "";
-    });
+    setPreviewUrl("");
   }, [initialData, open]);
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
 
   if (!open) {
     return null;
@@ -97,13 +83,15 @@ export default function AddDogModal({
       return;
     }
 
-    setPreviewUrl((current) => {
-      if (current.startsWith("blob:")) {
-        URL.revokeObjectURL(current);
-      }
+    const reader = new FileReader();
 
-      return URL.createObjectURL(file);
-    });
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setPreviewUrl(reader.result);
+      }
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
