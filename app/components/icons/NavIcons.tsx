@@ -81,11 +81,18 @@ export function VetIcon({ size = 20, ...props }: IconProps) {
 
 export function CoursesIcon({ size = 20, ...props }: IconProps) {
   return (
-    <svg {...baseProps(size)} {...props}>
-      <path d="M4 19V7a2 2 0 0 1 2-2h12v14" />
-      <path d="M6 17h12" />
-      <path d="M8 9h6" />
-      <path d="M8 12h8" />
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M2.6 7.2 12 3.3l9.4 3.9L12 11.1 2.6 7.2z" />
+      <path d="M6.2 10.2v4.1c0 .4.2.7.6.9l4.6 2.1c.4.2.8.2 1.2 0l4.6-2.1c.4-.2.6-.5.6-.9v-4.1L12 12.6 6.2 10.2z" />
+      <path d="M18.5 9.4v5.5" />
+      <path d="M17.5 18.8h2l-.6-3.6h-.8l-.6 3.6z" />
     </svg>
   );
 }
