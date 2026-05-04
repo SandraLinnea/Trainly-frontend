@@ -1,3 +1,4 @@
+import type { ComponentType, SVGProps } from "react";
 import Link from "next/link";
 
 import styles from "./AsideNav.module.css";
@@ -13,7 +14,7 @@ import {
 type NavItem = {
   href: string;
   label: string;
-  Icon: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>;
+  Icon: ComponentType<SVGProps<SVGSVGElement> & { size?: number }>;
   external?: boolean;
 };
 
@@ -33,8 +34,8 @@ const items: NavItem[] = [
 
 export default function AsideNav() {
   return (
-    <aside className={styles.aside} aria-label="Snabblankar">
-      <h2 className={styles.heading}>Brukshundsklubbar</h2>
+    <aside className={styles.aside} aria-label="Snabblänkar">
+      <h2 className={styles.heading}>Snabblänkar</h2>
       <div className={styles.rightLine} aria-hidden />
       <ul className={styles.list}>
         {items.map(({ href, label, Icon, external }) => (

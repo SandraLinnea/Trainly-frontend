@@ -2,18 +2,72 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import type { ComponentType, SVGProps } from "react";
+import { useState } from "react";
 
+import { CompetitionContent } from "../asidePages/competition/Competition";
+import { CoursesContent } from "../asidePages/courses/Courses";
+import { DogClubContent } from "../asidePages/dogClub/DogClub";
+import { ShoppingContent } from "../asidePages/shopping/Shopping";
+import { VeterinaryContent } from "../asidePages/vet/Veterinary";
 import LogoLink from "../brand/LogoLink";
 import {
   CoursesIcon,
   DogClubIcon,
+  DogIcon,
   ShoppingIcon,
   TrophyIcon,
   VetIcon,
 } from "../icons/NavIcons";
 import styles from "./Hero.module.css";
 
+type ModalKey = "clubs" | "courses" | "competitions" | "shopping" | "vets";
+
+type ModalItem = {
+  key: ModalKey;
+  label: string;
+  Icon: ComponentType<SVGProps<SVGSVGElement> & { size?: number }>;
+  Content: ComponentType;
+};
+
+const modalItems: ModalItem[] = [
+  {
+    key: "clubs",
+    label: "Brukshundsklubbar",
+    Icon: DogIcon,
+    Content: DogClubContent,
+  },
+  {
+    key: "courses",
+    label: "Kurser",
+    Icon: CoursesIcon,
+    Content: CoursesContent,
+  },
+  {
+    key: "competitions",
+    label: "SBK Tävling",
+    Icon: TrophyIcon,
+    Content: CompetitionContent,
+  },
+  {
+    key: "shopping",
+    label: "Shopping",
+    Icon: ShoppingIcon,
+    Content: ShoppingContent,
+  },
+  {
+    key: "vets",
+    label: "Veterinär",
+    Icon: VetIcon,
+    Content: VeterinaryContent,
+  },
+];
+
 export default function Hero() {
+  const [activeModal, setActiveModal] = useState<ModalKey | null>(null);
+  const activeItem = modalItems.find((item) => item.key === activeModal);
+  const ActiveContent = activeItem?.Content;
+
   return (
     <main className={styles.main}>
       <div className={styles.topRow}>
@@ -22,10 +76,10 @@ export default function Hero() {
         </div>
 
         <div className={styles.topActions}>
-          <Link href="/auth/login" className={styles.topLink}>
+          <Link href="/auth/login" className={styles.topButton}>
             Logga in
           </Link>
-          <Link href="/auth/register" className={styles.topButton}>
+          <Link href="/auth/register" className={styles.topLink}>
             Skapa konto
           </Link>
         </div>
@@ -55,33 +109,21 @@ export default function Hero() {
           </div>
         </section>
 
-        <aside className={styles.rightCol} aria-label="Snabblankar">
+        <aside className={styles.rightCol} aria-label="Snabblänkar">
           <div className={styles.rightLine} />
           <ul className={styles.list}>
-            <li>
-              <Link href="/courses" className={styles.listItem} prefetch={false}>
-                <CoursesIcon className={styles.icon} />
-                Kurser
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/competitions"
-                className={styles.listItem}
-                prefetch={false}
-              >
-                <TrophyIcon className={styles.icon} />
-                SBK Tävling
-              </Link>
-            </li>
-
-            <li>
-              <Link href="/shopping" className={styles.listItem} prefetch={false}>
-                <ShoppingIcon className={styles.icon} />
-                Shopping
-              </Link>
-            </li>
+            {modalItems.slice(0, 4).map(({ key, label, Icon }) => (
+              <li key={key}>
+                <button
+                  type="button"
+                  className={styles.listItem}
+                  onClick={() => setActiveModal(key)}
+                >
+                  <Icon className={styles.icon} />
+                  {label}
+                </button>
+              </li>
+            ))}
 
             <li>
               <Link
@@ -97,10 +139,14 @@ export default function Hero() {
             </li>
 
             <li>
-              <Link href="/vets" className={styles.listItem} prefetch={false}>
+              <button
+                type="button"
+                className={styles.listItem}
+                onClick={() => setActiveModal("vets")}
+              >
                 <VetIcon className={styles.icon} />
                 Veterinär
-              </Link>
+              </button>
             </li>
           </ul>
         </aside>
@@ -108,7 +154,7 @@ export default function Hero() {
         <div className={styles.laptopWrap}>
           <Image
             src="/images/Laptop.png"
-            alt="Trainly forhandsvisning"
+            alt="Trainly förhandsvisning"
             width={820}
             height={520}
             priority
@@ -116,6 +162,51 @@ export default function Hero() {
           />
         </div>
       </div>
+
+      {activeItem ? (
+        <div
+          className={styles.modalOverlay}
+          role="presentation"
+          onMouseDown={() => setActiveModal(null)}
+        >
+          <section
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-label={activeItem.label}
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <nav className={styles.modalNav} aria-label="Snabblänkar">
+                {modalItems.map(({ key, label, Icon }) => (
+                  <button
+                    type="button"
+                    key={key}
+                    className={`${styles.modalNavItem} ${
+                      activeModal === key ? styles.modalNavItemActive : ""
+                    }`}
+                    onClick={() => setActiveModal(key)}
+                  >
+                    <Icon className={styles.icon} />
+                    {label}
+                  </button>
+                ))}
+              </nav>
+
+              <button
+                type="button"
+                className={styles.closeButton}
+                onClick={() => setActiveModal(null)}
+                aria-label="Stäng"
+              >
+                x
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>{ActiveContent ? <ActiveContent /> : null}</div>
+          </section>
+        </div>
+      ) : null}
     </main>
   );
 }
