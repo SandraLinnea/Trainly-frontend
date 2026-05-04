@@ -24,10 +24,9 @@ const items: NavItem[] = [
   { href: "/competitions", label: "SBK Tävling", Icon: TrophyIcon },
   { href: "/shopping", label: "Shopping", Icon: ShoppingIcon },
   {
-    href: "https://brukshundklubben.se/om-oss/",
+    href: "/svenska-brukshundsklubben",
     label: "Svenska brukshundsklubben",
     Icon: DogClubIcon,
-    external: true,
   },
   { href: "/vets", label: "Veterinär", Icon: VetIcon },
 ];

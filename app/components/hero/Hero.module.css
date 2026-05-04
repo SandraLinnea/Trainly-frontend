@@ -188,13 +188,15 @@
   gap: 14px;
 }
 
-.list a {
+.list a,
+.list button {
   font-size: 18px;
   color: rgba(255, 255, 255, 0.82);
   text-decoration: none;
 }
 
-.list a:hover {
+.list a:hover,
+.list button:hover {
   text-decoration: underline;
 }
 
@@ -202,6 +204,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
 
   font-size: 18px;
   color: rgba(255, 255, 255, 0.82);
@@ -216,6 +225,89 @@
 .icon {
   flex: 0 0 auto;
   opacity: 0.9;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(14, 19, 17, 0.52);
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  width: min(100%, 1036px);
+  max-height: min(82vh, 760px);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 252, 248, 0.94);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+  color: #24211e;
+}
+
+.modalHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(78, 74, 68, 0.12);
+  background: rgba(249, 245, 239, 0.96);
+}
+
+.modalNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.modalNavItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.35rem;
+  border: 1px solid rgba(54, 80, 58, 0.14);
+  border-radius: 5px;
+  padding: 0.45rem 0.7rem;
+  background: rgba(255, 255, 255, 0.58);
+  color: #36503a;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modalNavItem:hover,
+.modalNavItemActive {
+  background: rgba(54, 80, 58, 0.1);
+}
+
+.closeButton {
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 1px solid rgba(54, 80, 58, 0.14);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.64);
+  color: #24211e;
+  font-family: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background: rgba(54, 80, 58, 0.1);
+}
+
+.modalBody {
+  overflow: auto;
+  padding: 1rem;
 }
 
 @media (max-width: 900px) {
@@ -244,6 +336,23 @@
 
   .brand {
     margin-left: 0;
+  }
+
+  .modalOverlay {
+    padding: 0.75rem;
+  }
+
+  .modal {
+    max-height: 88vh;
+  }
+
+  .modalHeader {
+    grid-template-columns: 1fr;
+  }
+
+  .closeButton {
+    justify-self: end;
+    order: -1;
   }
 }
 

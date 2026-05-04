@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -16,10 +16,43 @@ function navClass(
   return active ? `${baseClass} ${activeClass}` : baseClass;
 }
 
-export default function Header() {
+type HeaderProps = {
+  requireAuth?: boolean;
+};
+
+export default function Header({ requireAuth = true }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    async function requireAuth() {
+      try {
+        const response = await fetch(getApiUrl("/api/me"), {
+          credentials: "include",
+        });
+        const data = (await response.json()) as { authenticated?: boolean };
+
+        if (active && !data.authenticated) {
+          router.replace("/auth/login");
+        }
+      } catch {
+        if (active) {
+          router.replace("/auth/login");
+        }
+      }
+    }
+
+    if (requireAuth) {
+      void requireAuth();
+    }
+
+    return () => {
+      active = false;
+    };
+  }, [requireAuth, router]);
 
   async function handleLogout() {
     if (loggingOut) return;
@@ -46,6 +79,7 @@ export default function Header() {
           height={73}
           className={styles.logoLink}
           imageClassName={styles.logo}
+          href={requireAuth ? "/home" : "/"}
         />
       </div>
 
@@ -81,14 +115,25 @@ export default function Header() {
       </nav>
 
       <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.button}
-          onClick={handleLogout}
-          disabled={loggingOut}
-        >
-          {loggingOut ? "Loggar ut..." : "Logga ut"}
-        </button>
+        {requireAuth ? (
+          <button
+            type="button"
+            className={styles.button}
+            onClick={handleLogout}
+            disabled={loggingOut}
+          >
+            {loggingOut ? "Loggar ut..." : "Logga ut"}
+          </button>
+        ) : (
+          <>
+            <Link href="/auth/login" className={styles.button} prefetch={false}>
+              Logga in
+            </Link>
+            <Link href="/auth/register" className={styles.button} prefetch={false}>
+              Skapa konto
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );

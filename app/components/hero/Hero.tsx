@@ -9,6 +9,7 @@ import { CompetitionContent } from "../asidePages/competition/Competition";
 import { CoursesContent } from "../asidePages/courses/Courses";
 import { DogClubContent } from "../asidePages/dogClub/DogClub";
 import { ShoppingContent } from "../asidePages/shopping/Shopping";
+import { SvWorkingDogContent } from "../asidePages/svWorkingDog/SvWorkingDog";
 import { VeterinaryContent } from "../asidePages/vet/Veterinary";
 import LogoLink from "../brand/LogoLink";
 import {
@@ -21,7 +22,13 @@ import {
 } from "../icons/NavIcons";
 import styles from "./Hero.module.css";
 
-type ModalKey = "clubs" | "courses" | "competitions" | "shopping" | "vets";
+type ModalKey =
+  | "clubs"
+  | "courses"
+  | "competitions"
+  | "shopping"
+  | "svWorkingDog"
+  | "vets";
 
 type ModalItem = {
   key: ModalKey;
@@ -54,6 +61,12 @@ const modalItems: ModalItem[] = [
     label: "Shopping",
     Icon: ShoppingIcon,
     Content: ShoppingContent,
+  },
+  {
+    key: "svWorkingDog",
+    label: "Svenska brukshundsklubben",
+    Icon: DogClubIcon,
+    Content: SvWorkingDogContent,
   },
   {
     key: "vets",
@@ -112,7 +125,7 @@ export default function Hero() {
         <aside className={styles.rightCol} aria-label="Snabblänkar">
           <div className={styles.rightLine} />
           <ul className={styles.list}>
-            {modalItems.slice(0, 4).map(({ key, label, Icon }) => (
+            {modalItems.map(({ key, label, Icon }) => (
               <li key={key}>
                 <button
                   type="button"
@@ -124,30 +137,6 @@ export default function Hero() {
                 </button>
               </li>
             ))}
-
-            <li>
-              <Link
-                href="https://brukshundklubben.se/om-oss/"
-                className={styles.listItem}
-                prefetch={false}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <DogClubIcon className={styles.icon} />
-                Svenska brukshundsklubben
-              </Link>
-            </li>
-
-            <li>
-              <button
-                type="button"
-                className={styles.listItem}
-                onClick={() => setActiveModal("vets")}
-              >
-                <VetIcon className={styles.icon} />
-                Veterinär
-              </button>
-            </li>
           </ul>
         </aside>
 

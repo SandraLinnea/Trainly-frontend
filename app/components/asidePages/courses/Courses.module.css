@@ -67,6 +67,51 @@
   line-height: 1.5;
 }
 
+.links {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.card {
+  display: grid;
+  gap: 0.22rem;
+  padding: 0.9rem;
+  border-radius: 5px;
+  border: 1px solid rgba(71, 73, 67, 0.1);
+  background: rgba(248, 244, 238, 0.84);
+  color: inherit;
+  text-decoration: none;
+}
+
+.card:hover {
+  background: rgba(54, 80, 58, 0.08);
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #302d29;
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.logoImage {
+  display: block;
+  width: auto;
+  max-width: 9.5rem;
+  height: auto;
+  max-height: 2.875rem;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.cardUrl {
+  color: #5f5a52;
+  font-size: 0.9rem;
+}
+
 .aside {
   display: grid;
   min-height: 100%;

@@ -1,9 +1,16 @@
+"use client";
+
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
+import { getApiUrl } from "../../../lib/api";
 import AsideNav from "../../nav/AsideNav";
 import Footer from "../../footer/Footer";
 import Header from "../../header/Header";
 import styles from "./Veterinary.module.css";
 
 type Clinic = {
+  id: string;
   name: string;
   area: string;
   web?: string;
@@ -12,65 +19,16 @@ type Clinic = {
 
 type ClinicGroup = {
   title: string;
-  note?: string;
   clinics: Clinic[];
 };
 
-const clinicGroups: ClinicGroup[] = [
-  {
-    title: "Luleå / Boden / Piteå",
-    clinics: [
-      { name: "Lapplands Djurklinik Luleå", area: "Luleå", web: "https://lapplandsdjurklinik.se" },
-      { name: "Lapplands Djurklinik Boden", area: "Boden", web: "https://lapplandsdjurklinik.se" },
-      { name: "Lapplands Djurklinik Piteå", area: "Piteå", web: "https://lapplandsdjurklinik.se" },
-      { name: "Evidensia Djursjukhuset Gammelstad", area: "Gammelstad", web: "https://evidensia.se" },
-      { name: "Evidensia Djurkliniken Öjebyn", area: "Öjebyn", web: "https://evidensia.se" },
-      { name: "Pet Vet Sweden AB", area: "Piteå", note: "Saknar tydlig publik sida" },
-      { name: "Veterinärcentrum i Norr AB", area: "Rosvik", note: "Webb okänd" },
-      { name: "Veterinär Anna Semrén AB", area: "Råneå", note: "Webb okänd" },
-    ],
-  },
-  {
-    title: "Umeå",
-    note: "Umeå är största veterinärnavet i länet.",
-    clinics: [
-      { name: "Djurkliniken i Umeå", area: "Umeå", web: "https://dku.se" },
-      { name: "Anium Vetcentrum", area: "Umeå", web: "https://aniumavetcentrum.se" },
-      { name: "Björkstadens Djurklinik", area: "Umeå", web: "https://evidensia.se" },
-      { name: "DinVet Umeå", area: "Umeå", web: "https://dinvetumea.se" },
-      { name: "UmeVet", area: "Holmsund (Umeå)", web: "https://umevet.se" },
-      { name: "Djurkliniken Våra Vänner", area: "Umeå", web: "https://lapplandsdjurklinik.se" },
-      { name: "Veterinär Lars Göransson AB", area: "Umeå", note: "Katalogsida" },
-    ],
-  },
-  {
-    title: "Skellefteå",
-    note: "Ungefär 40+ veterinärverksamheter i länet totalt.",
-    clinics: [
-      { name: "Djurkliniken i Skellefteå Anderstorg", area: "Skellefteå", web: "https://lapplandsdjurklinik.se" },
-      { name: "Veterinär Linda Lundström AB", area: "Skellefteå", note: "Egen sida finns" },
-      { name: "Distriktsveterinärerna Skellefteå", area: "Skellefteå", web: "https://distriktsveterinarerna.se" },
-    ],
-  },
-  {
-    title: "Inland",
-    clinics: [
-      { name: "Dolittle Veterinärklinik", area: "Lycksele", web: "https://dolittle-vet.com" },
-      { name: "Distriktsveterinärerna Lycksele", area: "Lycksele", web: "https://distriktsveterinarerna.se" },
-      { name: "Distriktsveterinärerna Vilhelmina", area: "Vilhelmina", web: "https://distriktsveterinarerna.se" },
-      { name: "Åsele Veterinären", area: "Åsele", note: "Lokal sida" },
-    ],
-  },
-  {
-    title: "Vännäs / Bygdeå / mindre orter",
-    clinics: [
-      { name: "Distriktsveterinärerna Vännäs", area: "Vännäs", web: "https://distriktsveterinarerna.se" },
-      { name: "Distriktsveterinärerna Umåker", area: "Umeå", web: "https://distriktsveterinarerna.se" },
-      { name: "Distriktsveterinärerna Bygdeå", area: "Bygdeå", web: "https://distriktsveterinarerna.se" },
-      { name: "Bovet i Sverige AB", area: "Okänd", note: "Komplettera ort och webb" },
-    ],
-  },
-];
+type VetsResponse = {
+  counties: {
+    name: string;
+    count: number;
+  }[];
+  groups: ClinicGroup[];
+};
 
 function getMapUrl(clinic: Clinic) {
   return `https://www.openstreetmap.org/search?query=${encodeURIComponent(
@@ -79,66 +37,164 @@ function getMapUrl(clinic: Clinic) {
 }
 
 export function VeterinaryContent() {
+  const [query, setQuery] = useState("");
+  const [county, setCounty] = useState("all");
+  const [counties, setCounties] = useState<VetsResponse["counties"]>([]);
+  const [groups, setGroups] = useState<ClinicGroup[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const params = new URLSearchParams();
+
+    if (query.trim()) {
+      params.set("search", query.trim());
+    }
+
+    if (county !== "all") {
+      params.set("county", county);
+    }
+
+    async function loadVets() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await fetch(getApiUrl(`/api/vets?${params.toString()}`), {
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error("Kunde inte hämta veterinärer.");
+        }
+
+        const data = (await response.json()) as VetsResponse;
+        setCounties(data.counties);
+        setGroups(data.groups);
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          return;
+        }
+
+        setError("Kunde inte hämta veterinärer just nu.");
+        setGroups([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    void loadVets();
+
+    return () => {
+      controller.abort();
+    };
+  }, [query, county]);
+
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Här kan du hitta din närmsta veterinär</h1>
           <p className={styles.lead}>
-            Sök på ort för att enkelt hitta kliniker och djursjukhus i din närhet.
+            Sök på namn eller ort och filtrera efter län.
           </p>
         </div>
       </div>
 
-      <div className={styles.groups}>
-        {clinicGroups.map((group) => (
-          <section className={styles.group} key={group.title}>
-            <div className={styles.groupHeader}>
-              <h2 className={styles.groupTitle}>{group.title}</h2>
-              {group.note ? <p className={styles.groupNote}>{group.note}</p> : null}
-            </div>
+      <div className={styles.filters}>
+        <label className={styles.field}>
+          <span>Sök</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Sök på klinik, ort eller webbadress"
+          />
+        </label>
 
-            <div className={styles.list}>
-              {group.clinics.map((clinic) => (
-                <article className={styles.card} key={clinic.name}>
-                  <div>
-                    <p className={styles.area}>{clinic.area}</p>
-                    <h3 className={styles.cardTitle}>{clinic.name}</h3>
-                    {clinic.note ? <p className={styles.note}>{clinic.note}</p> : null}
+        <label className={styles.field}>
+          <span>Län</span>
+          <select value={county} onChange={(event) => setCounty(event.target.value)}>
+            <option value="all">Hela landet</option>
+            {counties.map((countyOption) => (
+              <option value={countyOption.name} key={countyOption.name}>
+                {countyOption.name} ({countyOption.count} st)
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div className={styles.layout}>
+        <div className={styles.groups}>
+          {loading ? <p className={styles.empty}>Hämtar veterinärer...</p> : null}
+          {error ? <p className={styles.empty}>{error}</p> : null}
+
+          {!loading && !error && groups.length > 0
+            ? groups.map((group) => (
+                <section className={styles.group} key={group.title}>
+                  <div className={styles.groupHeader}>
+                    <h2 className={styles.groupTitle}>{group.title}</h2>
                   </div>
 
-                  <dl className={styles.details}>
-                    <div>
-                      <dt>Ort</dt>
-                      <dd>{clinic.area}</dd>
-                    </div>
-                    <div>
-                      <dt>Webb</dt>
-                      <dd>
-                        {clinic.web ? (
-                          <a href={clinic.web} target="_blank" rel="noreferrer">
-                            {clinic.web.replace("https://", "")}
-                          </a>
-                        ) : (
-                          clinic.note ?? "Okänd"
-                        )}
-                      </dd>
-                    </div>
-                  </dl>
+                  <div className={styles.list}>
+                    {group.clinics.map((clinic) => (
+                      <article className={styles.card} key={clinic.id}>
+                        <div>
+                          <p className={styles.area}>{clinic.area}</p>
+                          <h3 className={styles.cardTitle}>{clinic.name}</h3>
+                          {clinic.note ? <p className={styles.note}>{clinic.note}</p> : null}
+                        </div>
 
-                  <a
-                    className={styles.mapLink}
-                    href={getMapUrl(clinic)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Visa karta
-                  </a>
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
+                        <dl className={styles.details}>
+                          <div>
+                            <dt>Ort</dt>
+                            <dd>{clinic.area}</dd>
+                          </div>
+                          <div>
+                            <dt>Webb</dt>
+                            <dd>
+                              {clinic.web ? (
+                                <a href={clinic.web} target="_blank" rel="noreferrer">
+                                  {clinic.web.replace("https://", "")}
+                                </a>
+                              ) : (
+                                clinic.note ?? "Okänd"
+                              )}
+                            </dd>
+                          </div>
+                        </dl>
+
+                        <a
+                          className={styles.mapLink}
+                          href={getMapUrl(clinic)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Visa karta
+                        </a>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ))
+            : null}
+
+          {!loading && !error && groups.length === 0 ? (
+            <p className={styles.empty}>Inga veterinärer matchar din sökning.</p>
+          ) : null}
+        </div>
+
+        <aside className={styles.ad} aria-label="Reklam">
+          <Image
+            src="/images/Arstakliniken.png"
+            alt="Årstakliniken"
+            width={320}
+            height={480}
+            className={styles.adImage}
+          />
+        </aside>
       </div>
     </div>
   );
@@ -154,68 +210,7 @@ export default function Veterinary() {
           <div className={styles.inner}>
             <section className={styles.content}>
               <div className={styles.topLine} aria-hidden />
-
-              <div className={styles.panel}>
-                <div className={styles.header}>
-                  <div>
-                    <h1 className={styles.title}>Här kan du hitta din närmsta veterinär</h1>
-                    <p className={styles.lead}>
-                      Sök på ort för att enkelt hitta kliniker och djursjukhus i din närhet.
-                    </p>
-                  </div>
-                </div>
-
-                <div className={styles.groups}>
-                  {clinicGroups.map((group) => (
-                    <section className={styles.group} key={group.title}>
-                      <div className={styles.groupHeader}>
-                        <h2 className={styles.groupTitle}>{group.title}</h2>
-                        {group.note ? <p className={styles.groupNote}>{group.note}</p> : null}
-                      </div>
-
-                      <div className={styles.list}>
-                        {group.clinics.map((clinic) => (
-                          <article className={styles.card} key={clinic.name}>
-                            <div>
-                              <p className={styles.area}>{clinic.area}</p>
-                              <h3 className={styles.cardTitle}>{clinic.name}</h3>
-                              {clinic.note ? <p className={styles.note}>{clinic.note}</p> : null}
-                            </div>
-
-                            <dl className={styles.details}>
-                              <div>
-                                <dt>Ort</dt>
-                                <dd>{clinic.area}</dd>
-                              </div>
-                              <div>
-                                <dt>Webb</dt>
-                                <dd>
-                                  {clinic.web ? (
-                                    <a href={clinic.web} target="_blank" rel="noreferrer">
-                                      {clinic.web.replace("https://", "")}
-                                    </a>
-                                  ) : (
-                                    clinic.note ?? "Okänd"
-                                  )}
-                                </dd>
-                              </div>
-                            </dl>
-
-                            <a
-                              className={styles.mapLink}
-                              href={getMapUrl(clinic)}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              Visa karta
-                            </a>
-                          </article>
-                        ))}
-                      </div>
-                    </section>
-                  ))}
-                </div>
-              </div>
+              <VeterinaryContent />
             </section>
 
             <aside className={styles.aside}>
