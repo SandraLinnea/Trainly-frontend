@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 286 105" role="img" aria-label="Tassavtryck Hundsport">
+  <path
+    d="M144 24c10-10 23-7 30-5 9 3 16-3 25 2 8 5 9 13 3 19-8 8-22 8-35 6-12-2-21 1-29 8"
+    fill="none"
+    stroke="#111"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <text
+    x="2"
+    y="64"
+    fill="#111"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="42"
+    font-style="italic"
+    font-weight="700"
+  >
+    Tassavtryck
+  </text>
+  <text
+    x="42"
+    y="99"
+    fill="#111"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="38"
+    font-style="italic"
+    font-weight="700"
+  >
+    Hundsport
+  </text>
+</svg>
