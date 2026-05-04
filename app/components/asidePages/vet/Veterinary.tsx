@@ -32,10 +32,36 @@ type VetsResponse = {
   groups: ClinicGroup[];
 };
 
+const INITIAL_PAGE_SIZE = 5;
+
 function getMapUrl(clinic: Clinic) {
   return `https://www.openstreetmap.org/search?query=${encodeURIComponent(
     `${clinic.name} ${clinic.address ?? clinic.area}`
   )}`;
+}
+
+function getClinicCount(groups: ClinicGroup[]) {
+  return groups.reduce((count, group) => count + group.clinics.length, 0);
+}
+
+function getPaginatedGroups(groups: ClinicGroup[], page: number) {
+  const start = (page - 1) * INITIAL_PAGE_SIZE;
+  const end = start + INITIAL_PAGE_SIZE;
+  const clinics = groups.flatMap((group) =>
+    group.clinics.map((clinic) => ({ clinic, groupTitle: group.title }))
+  );
+
+  return clinics.slice(start, end).reduce<ClinicGroup[]>((result, item) => {
+    const group = result.find((entry) => entry.title === item.groupTitle);
+
+    if (group) {
+      group.clinics.push(item.clinic);
+      return result;
+    }
+
+    result.push({ title: item.groupTitle, clinics: [item.clinic] });
+    return result;
+  }, []);
 }
 
 export function VeterinaryContent() {
@@ -43,8 +69,13 @@ export function VeterinaryContent() {
   const [county, setCounty] = useState("all");
   const [counties, setCounties] = useState<VetsResponse["counties"]>([]);
   const [groups, setGroups] = useState<ClinicGroup[]>([]);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const hasFilters = query.trim().length > 0 || county !== "all";
+  const totalClinicCount = getClinicCount(groups);
+  const totalPages = Math.max(1, Math.ceil(totalClinicCount / INITIAL_PAGE_SIZE));
+  const visibleGroups = hasFilters ? groups : getPaginatedGroups(groups, page);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -93,6 +124,10 @@ export function VeterinaryContent() {
     };
   }, [query, county]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [query, county]);
+
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
@@ -133,8 +168,8 @@ export function VeterinaryContent() {
           {loading ? <p className={styles.empty}>Hämtar veterinärer...</p> : null}
           {error ? <p className={styles.empty}>{error}</p> : null}
 
-          {!loading && !error && groups.length > 0
-            ? groups.map((group) => (
+          {!loading && !error && visibleGroups.length > 0
+            ? visibleGroups.map((group) => (
                 <section className={styles.group} key={group.title}>
                   <div className={styles.groupHeader}>
                     <h2 className={styles.groupTitle}>{group.title}</h2>
@@ -189,6 +224,34 @@ export function VeterinaryContent() {
                 </section>
               ))
             : null}
+
+          {!loading && !error && !hasFilters && totalClinicCount > INITIAL_PAGE_SIZE ? (
+            <div className={styles.pagination}>
+              <p>
+                Visar {(page - 1) * INITIAL_PAGE_SIZE + 1}-
+                {Math.min(page * INITIAL_PAGE_SIZE, totalClinicCount)} av{" "}
+                {totalClinicCount} kliniker
+              </p>
+              <div className={styles.pageActions}>
+                <button
+                  type="button"
+                  onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))}
+                  disabled={page === 1}
+                >
+                  Föregående
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setPage((currentPage) => Math.min(totalPages, currentPage + 1))
+                  }
+                  disabled={page === totalPages}
+                >
+                  Nästa
+                </button>
+              </div>
+            </div>
+          ) : null}
 
           {!loading && !error && groups.length === 0 ? (
             <p className={styles.empty}>Inga veterinärer matchar din sökning.</p>
