@@ -1,14 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AsideNav from "../nav/AsideNav";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
 import CloseIcon from "../icons/CloseIcon";
+import { getApiUrl, readApiError } from "../../lib/api";
 import AddActivityModal, { CalendarEvent } from "./AddActivityModal";
 import styles from "./CalendarPage.module.css";
 
-const weekdays = ["Man", "Tis", "Ons", "Tor", "Fre", "Lor", "Son"];
+const weekdays = ["Man", "Tis", "Ons", "Tor", "Fre", "Lör", "Sön"];
 const monthNames = [
   "Januari",
   "Februari",
@@ -24,112 +25,21 @@ const monthNames = [
   "December",
 ];
 
-const today = new Date(2026, 3, 14);
+const today = new Date();
 
-const initialEvents: CalendarEvent[] = [
-  {
-    year: 2026,
-    month: 3,
-    day: 3,
-    title: "Valpkurs",
-    time: "18:00",
-    type: "Kurs",
-    location: "Svenska brukshundsklubben",
-  },
-  {
-    year: 2026,
-    month: 3,
-    day: 3,
-    title: "Kvallsrastning",
-    time: "20:00",
-    type: "Pass",
-    location: "Skogsslingan",
-  },
-  {
-    year: 2026,
-    month: 3,
-    day: 8,
-    title: "Vardagslydnad",
-    time: "17:30",
-    type: "Traning",
-    location: "Appellplanen",
-  },
-  {
-    year: 2026,
-    month: 3,
-    day: 14,
-    title: "Veterinar kontroll",
-    time: "09:15",
-    type: "Veterinar",
-    location: "Djurkliniken Syd",
-  },
-  {
-    year: 2026,
-    month: 3,
-    day: 14,
-    title: "Promenadgrupp",
-    time: "18:30",
-    type: "Socialt",
-    location: "Stadsparken",
-  },
-  {
-    year: 2026,
-    month: 3,
-    day: 18,
-    title: "SBK Tavling",
-    time: "10:00",
-    type: "Tavling",
-    location: "Klubbfaltet",
-  },
-  {
-    year: 2026,
-    month: 3,
-    day: 23,
-    title: "Nose work-pass",
-    time: "19:00",
-    type: "Pass",
-    location: "Inomhushallen",
-  },
-  {
-    year: 2026,
-    month: 3,
-    day: 27,
-    title: "Kloklippning",
-    time: "15:00",
-    type: "Omsorg",
-    location: "Hundsalongen",
-  },
-  {
-    year: 2026,
-    month: 4,
-    day: 5,
-    title: "Sparpass",
-    time: "11:00",
-    type: "Pass",
-    location: "Skogsangen",
-  },
-  {
-    year: 2026,
-    month: 4,
-    day: 12,
-    title: "Kursavslutning",
-    time: "18:00",
-    type: "Kurs",
-    location: "Klubbhuset",
-  },
-];
+type CalendarResponse = {
+  events: CalendarEvent[];
+};
 
-function getMonthLabel(
-  monthIndex: number,
-  year: number
-) {
+type CalendarEventResponse = {
+  event: CalendarEvent;
+};
+
+function getMonthLabel(monthIndex: number, year: number) {
   return `${monthNames[monthIndex]} ${year}`;
 }
 
-function getWeekdayOffset(
-  year: number,
-  monthIndex: number
-) {
+function getWeekdayOffset(year: number, monthIndex: number) {
   const jsDay = new Date(year, monthIndex, 1).getDay();
   return (jsDay + 6) % 7;
 }
@@ -138,11 +48,68 @@ function getEventDateLabel(event: CalendarEvent) {
   return `${event.day} ${monthNames[event.month].toLowerCase()} ${event.year}`;
 }
 
+function sortEvents(events: CalendarEvent[]) {
+  return [...events].sort((a, b) => {
+    const aValue = new Date(a.year, a.month, a.day).getTime();
+    const bValue = new Date(b.year, b.month, b.day).getTime();
+
+    if (aValue !== bValue) {
+      return aValue - bValue;
+    }
+
+    return a.time.localeCompare(b.time);
+  });
+}
+
 export default function CalendarPage() {
-  const [visibleMonth, setVisibleMonth] = useState({ year: 2026, month: 3 });
-  const [events, setEvents] = useState(initialEvents);
+  const [visibleMonth, setVisibleMonth] = useState({
+    year: today.getFullYear(),
+    month: today.getMonth(),
+  });
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isActivityListOpen, setIsActivityListOpen] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadEvents() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await fetch(getApiUrl("/api/calendar"), {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error(await readApiError(response, "Kunde inte hämta aktiviteter."));
+        }
+
+        const data = (await response.json()) as CalendarResponse;
+
+        if (active) {
+          setEvents(sortEvents(data.events));
+        }
+      } catch (err) {
+        if (active) {
+          setError(err instanceof Error ? err.message : "Kunde inte hämta aktiviteter.");
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadEvents();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const monthEvents = useMemo(
     () =>
@@ -153,7 +120,15 @@ export default function CalendarPage() {
     [events, visibleMonth],
   );
 
-  const nextActivity = monthEvents[0] ?? events[0];
+  const upcomingEvents = useMemo(() => {
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+
+    return events.filter((event) => {
+      return new Date(event.year, event.month, event.day).getTime() >= startOfToday;
+    });
+  }, [events]);
+
+  const nextActivity = upcomingEvents[0] ?? events[0] ?? null;
   const leadingEmptyDays = getWeekdayOffset(visibleMonth.year, visibleMonth.month);
   const daysInMonth = new Date(
     visibleMonth.year,
@@ -205,21 +180,35 @@ export default function CalendarPage() {
     });
   };
 
-  const handleAddActivity = (event: CalendarEvent) => {
-    setEvents((current) =>
-      [...current, event].sort((a, b) => {
-        const aValue = new Date(a.year, a.month, a.day).getTime();
-        const bValue = new Date(b.year, b.month, b.day).getTime();
+  const handleAddActivity = async (event: CalendarEvent) => {
+    setError("");
 
-        if (aValue !== bValue) {
-          return aValue - bValue;
-        }
+    try {
+      const response = await fetch(getApiUrl("/api/calendar"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          date: event.date,
+          title: event.title,
+          time: event.time,
+          type: event.type,
+          location: event.location,
+        }),
+      });
 
-        return a.time.localeCompare(b.time);
-      }),
-    );
+      if (!response.ok) {
+        throw new Error(await readApiError(response, "Kunde inte spara aktivitet."));
+      }
 
-    setIsAddModalOpen(false);
+      const data = (await response.json()) as CalendarEventResponse;
+      setEvents((current) => sortEvents([...current, data.event]));
+      setIsAddModalOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunde inte spara aktivitet.");
+    }
   };
 
   return (
@@ -231,6 +220,9 @@ export default function CalendarPage() {
           <div className={styles.inner}>
             <section className={styles.content}>
               <div className={styles.topLine} aria-hidden />
+
+              {error ? <p className={styles.status}>{error}</p> : null}
+              {loading ? <p className={styles.status}>Hämtar aktiviteter...</p> : null}
 
               <div className={styles.layout}>
                 <section className={styles.calendarCard}>
@@ -245,7 +237,7 @@ export default function CalendarPage() {
                           className={styles.monthButton}
                           type="button"
                           onClick={goToPreviousMonth}
-                          aria-label="Forra manaden"
+                          aria-label="Förra månaden"
                         >
                           ↑
                         </button>
@@ -253,7 +245,7 @@ export default function CalendarPage() {
                           className={styles.monthButton}
                           type="button"
                           onClick={goToNextMonth}
-                          aria-label="Nasta manaden"
+                          aria-label="Nästa månaden"
                         >
                           ↓
                         </button>
@@ -292,14 +284,14 @@ export default function CalendarPage() {
                           {hasEvents ? (
                             <>
                               <div className={styles.eventDots} aria-hidden>
-                                {cell.dayEvents.map((event, index) => (
-                                  <span key={`${event.title}-${index}`} className={styles.eventDot} />
+                                {cell.dayEvents.map((event) => (
+                                  <span key={event.id} className={styles.eventDot} />
                                 ))}
                               </div>
 
                               <div className={styles.tooltip} role="note">
-                                {cell.dayEvents.map((event, index) => (
-                                  <div key={`${event.title}-${index}`} className={styles.tooltipEvent}>
+                                {cell.dayEvents.map((event) => (
+                                  <div key={event.id} className={styles.tooltipEvent}>
                                     <strong>{event.title}</strong>
                                     <span>
                                       {event.time} · {event.type}
@@ -321,7 +313,7 @@ export default function CalendarPage() {
                       type="button"
                       onClick={() => setIsAddModalOpen(true)}
                     >
-                      Lagg till aktivitet
+                      Lägg till aktivitet
                     </button>
                     <button
                       className={styles.viewAllButton}
@@ -334,27 +326,33 @@ export default function CalendarPage() {
                 </section>
 
                 <aside className={styles.nextCard}>
-                  <p className={styles.nextLabel}>Nast kommande</p>
-                  <h2 className={styles.nextTitle}>{nextActivity.title}</h2>
+                  <p className={styles.nextLabel}>Näst kommande</p>
+                  <h2 className={styles.nextTitle}>
+                    {nextActivity ? nextActivity.title : "Ingen aktivitet"}
+                  </h2>
 
-                  <dl className={styles.nextDetails}>
-                    <div className={styles.nextRow}>
-                      <dt>Datum</dt>
-                      <dd>{getEventDateLabel(nextActivity)}</dd>
-                    </div>
-                    <div className={styles.nextRow}>
-                      <dt>Tid</dt>
-                      <dd>{nextActivity.time}</dd>
-                    </div>
-                    <div className={styles.nextRow}>
-                      <dt>Typ</dt>
-                      <dd>{nextActivity.type}</dd>
-                    </div>
-                    <div className={styles.nextRow}>
-                      <dt>Plats</dt>
-                      <dd>{nextActivity.location}</dd>
-                    </div>
-                  </dl>
+                  {nextActivity ? (
+                    <dl className={styles.nextDetails}>
+                      <div className={styles.nextRow}>
+                        <dt>Datum</dt>
+                        <dd>{getEventDateLabel(nextActivity)}</dd>
+                      </div>
+                      <div className={styles.nextRow}>
+                        <dt>Tid</dt>
+                        <dd>{nextActivity.time}</dd>
+                      </div>
+                      <div className={styles.nextRow}>
+                        <dt>Typ</dt>
+                        <dd>{nextActivity.type}</dd>
+                      </div>
+                      <div className={styles.nextRow}>
+                        <dt>Plats</dt>
+                        <dd>{nextActivity.location}</dd>
+                      </div>
+                    </dl>
+                  ) : (
+                    <p className={styles.nextHint}>Lägg till din första aktivitet.</p>
+                  )}
                 </aside>
               </div>
             </section>
@@ -398,31 +396,32 @@ export default function CalendarPage() {
                 className={styles.activityCloseButton}
                 type="button"
                 onClick={() => setIsActivityListOpen(false)}
-                aria-label="Stang"
+                aria-label="Stäng"
               >
                 <CloseIcon />
               </button>
             </div>
 
             <div className={styles.activityList}>
-              {events.map((event, index) => (
-                <article
-                  className={styles.activityItem}
-                  key={`${event.year}-${event.month}-${event.day}-${event.time}-${event.title}-${index}`}
-                >
-                  <div>
-                    <h3 className={styles.activityTitle}>{event.title}</h3>
-                    <p className={styles.activityMeta}>
-                      {getEventDateLabel(event)} · {event.time}
-                    </p>
-                  </div>
+              {events.length > 0 ? (
+                events.map((event) => (
+                  <article className={styles.activityItem} key={event.id}>
+                    <div>
+                      <h3 className={styles.activityTitle}>{event.title}</h3>
+                      <p className={styles.activityMeta}>
+                        {getEventDateLabel(event)} · {event.time}
+                      </p>
+                    </div>
 
-                  <div className={styles.activityDetails}>
-                    <span>{event.type}</span>
-                    <span>{event.location}</span>
-                  </div>
-                </article>
-              ))}
+                    <div className={styles.activityDetails}>
+                      <span>{event.type}</span>
+                      <span>{event.location}</span>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <p className={styles.status}>Du har inte lagt till några aktiviteter än.</p>
+              )}
             </div>
           </div>
         </div>

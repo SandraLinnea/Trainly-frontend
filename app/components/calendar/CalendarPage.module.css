@@ -51,6 +51,18 @@
   width: min(100%, 1036px);
 }
 
+.status {
+  width: min(100%, 1036px);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 5px;
+  border: 1px solid rgba(71, 73, 67, 0.1);
+  background: rgba(255, 252, 248, 0.78);
+  color: #5f5a52;
+  font-size: 0.95rem;
+}
+
 .calendarCard,
 .nextCard {
   box-sizing: border-box;

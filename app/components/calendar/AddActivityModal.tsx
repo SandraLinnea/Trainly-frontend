@@ -5,6 +5,8 @@ import styles from "./AddActivityModal.module.css";
 import CloseIcon from "../icons/CloseIcon";
 
 export type CalendarEvent = {
+  id: string;
+  date: string;
   year: number;
   month: number;
   day: number;
@@ -76,6 +78,8 @@ export default function AddActivityModal({
     const selectedDate = new Date(form.date);
 
     onSave({
+      id: "",
+      date: form.date,
       year: selectedDate.getFullYear(),
       month: selectedDate.getMonth(),
       day: selectedDate.getDate(),
