@@ -10,9 +10,11 @@ import Header from "../../header/Header";
 import styles from "./Veterinary.module.css";
 
 type Clinic = {
-  id: string;
+  id: string | number;
   name: string;
+  municipality: string;
   area: string;
+  address?: string;
   web?: string;
   note?: string;
 };
@@ -32,7 +34,7 @@ type VetsResponse = {
 
 function getMapUrl(clinic: Clinic) {
   return `https://www.openstreetmap.org/search?query=${encodeURIComponent(
-    `${clinic.name} ${clinic.area}`
+    `${clinic.name} ${clinic.address ?? clinic.area}`
   )}`;
 }
 
@@ -144,10 +146,17 @@ export function VeterinaryContent() {
                         <div>
                           <p className={styles.area}>{clinic.area}</p>
                           <h3 className={styles.cardTitle}>{clinic.name}</h3>
+                          {clinic.address ? (
+                            <p className={styles.address}>{clinic.address}</p>
+                          ) : null}
                           {clinic.note ? <p className={styles.note}>{clinic.note}</p> : null}
                         </div>
 
                         <dl className={styles.details}>
+                          <div>
+                            <dt>Kommun</dt>
+                            <dd>{clinic.municipality}</dd>
+                          </div>
                           <div>
                             <dt>Ort</dt>
                             <dd>{clinic.area}</dd>

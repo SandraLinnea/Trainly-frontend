@@ -191,6 +191,13 @@
   line-height: 1.45;
 }
 
+.address {
+  margin: 0.28rem 0 0;
+  color: #5a554d;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .details {
   display: grid;
   gap: 0.55rem;
