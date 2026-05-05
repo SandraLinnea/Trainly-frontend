@@ -96,3 +96,26 @@ export function CoursesIcon({ size = 20, ...props }: IconProps) {
     </svg>
   );
 }
+
+export function TrainingInspirationIcon({ size = 20, ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M3.5 16.8c0-.7.5-1.2 1.2-1.2h3.4c.7 0 1.2.5 1.2 1.2v1.6c0 .7-.5 1.2-1.2 1.2H4.7c-.7 0-1.2-.5-1.2-1.2v-1.6z" />
+      <path d="M5.5 7.1c0-.6.5-1 1-1h1.8c.6 0 1 .4 1 1v2.3c0 .6-.4 1-1 1H6.5c-.5 0-1-.4-1-1V7.1z" />
+      <path d="M6.5 10h1.8v5.9H6.5V10z" />
+      <path d="M10.3 15.1c0-.7.5-1.2 1.2-1.2h3.5c.7 0 1.2.5 1.2 1.2v1.8c0 .7-.5 1.2-1.2 1.2h-3.5c-.7 0-1.2-.5-1.2-1.2v-1.8z" />
+      <path d="M12.4 5.9c0-.6.5-1 1-1h1.9c.6 0 1 .4 1 1v2.5c0 .6-.4 1-1 1h-1.9c-.5 0-1-.4-1-1V5.9z" />
+      <path d="M13.4 9h1.8v5.2h-1.8V9z" />
+      <path d="M16.8 17.1c0-.7.5-1.2 1.2-1.2h3.1c.7 0 1.2.5 1.2 1.2v1.9c0 .7-.5 1.2-1.2 1.2H18c-.7 0-1.2-.5-1.2-1.2v-1.9z" />
+      <path d="M18.6 3.9c0-.7.5-1.2 1.2-1.2h2.1c.7 0 1.2.5 1.2 1.2v3.3c0 .7-.5 1.2-1.2 1.2h-2.1c-.7 0-1.2-.5-1.2-1.2V3.9z" />
+      <path d="M19.6 8h1.9v8.1h-1.9V8z" />
+    </svg>
+  );
+}

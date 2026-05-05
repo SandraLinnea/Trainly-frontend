@@ -121,6 +121,20 @@
   background: #2f4632;
 }
 
+.deleteButton {
+  border-radius: 5px;
+  padding: 0.76rem 1.1rem;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid rgba(135, 50, 44, 0.24);
+  background: rgba(135, 50, 44, 0.08);
+  color: #87322c;
+}
+
+.deleteButton:hover {
+  background: rgba(135, 50, 44, 0.14);
+}
+
 @media (max-width: 720px) {
   .row {
     grid-template-columns: 1fr;

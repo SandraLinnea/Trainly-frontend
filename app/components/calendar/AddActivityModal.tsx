@@ -20,8 +20,10 @@ type AddActivityModalProps = {
   open: boolean;
   onClose: () => void;
   onSave: (event: CalendarEvent) => void;
+  onDelete?: (event: CalendarEvent) => void;
   defaultYear: number;
   defaultMonth: number;
+  event?: CalendarEvent | null;
 };
 
 type FormState = {
@@ -44,15 +46,29 @@ export default function AddActivityModal({
   open,
   onClose,
   onSave,
+  onDelete,
   defaultYear,
   defaultMonth,
+  event,
 }: AddActivityModalProps) {
   const [form, setForm] = useState<FormState>(initialForm);
+  const isEditing = Boolean(event);
 
   const defaultDate = `${defaultYear}-${String(defaultMonth + 1).padStart(2, "0")}-01`;
 
   useEffect(() => {
     if (open) {
+      if (event) {
+        setForm({
+          date: event.date,
+          title: event.title,
+          time: event.time,
+          type: event.type,
+          location: event.location,
+        });
+        return;
+      }
+
       setForm((current) => ({
         ...initialForm,
         date: current.date || defaultDate,
@@ -61,7 +77,7 @@ export default function AddActivityModal({
     }
 
     setForm(initialForm);
-  }, [defaultDate, open]);
+  }, [defaultDate, event, open]);
 
   if (!open) {
     return null;
@@ -72,17 +88,17 @@ export default function AddActivityModal({
     setForm((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = (submitEvent: FormEvent<HTMLFormElement>) => {
+    submitEvent.preventDefault();
 
-    const selectedDate = new Date(form.date);
+    const [year, month, day] = form.date.split("-").map(Number);
 
     onSave({
-      id: "",
+      id: event?.id ?? "",
       date: form.date,
-      year: selectedDate.getFullYear(),
-      month: selectedDate.getMonth(),
-      day: selectedDate.getDate(),
+      year,
+      month: month - 1,
+      day,
       title: form.title.trim(),
       time: form.time.trim(),
       type: form.type.trim(),
@@ -103,7 +119,7 @@ export default function AddActivityModal({
           <div className={styles.header}>
             <div>
               <h2 id="add-activity-title" className={styles.title}>
-                Lägg till aktivitet
+                {isEditing ? "Redigera aktivitet" : "Lägg till aktivitet"}
               </h2>
             </div>
 
@@ -183,8 +199,18 @@ export default function AddActivityModal({
 
           <div className={styles.actions}>
             <button className={styles.saveButton} type="submit">
-              Spara aktivitet
+              {isEditing ? "Spara ändringar" : "Spara aktivitet"}
             </button>
+
+            {isEditing && event && onDelete ? (
+              <button
+                className={styles.deleteButton}
+                type="button"
+                onClick={() => onDelete(event)}
+              >
+                Ta bort
+              </button>
+            ) : null}
           </div>
         </form>
       </div>

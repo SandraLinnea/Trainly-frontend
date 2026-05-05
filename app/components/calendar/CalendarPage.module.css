@@ -270,7 +270,7 @@
   left: 50%;
   min-width: 170px;
   max-width: 220px;
-  bottom: calc(100% + 0.45rem);
+  bottom: calc(100% - 0.05rem);
   display: grid;
   gap: 0.14rem;
   padding: 0.65rem 0.75rem;
@@ -287,6 +287,10 @@
   z-index: 4;
 }
 
+.bookedDay:hover .tooltip {
+  pointer-events: auto;
+}
+
 .tooltip strong {
   font-size: 0.9rem;
   font-weight: 600;
@@ -301,6 +305,24 @@
   margin-top: 0.55rem;
   padding-top: 0.55rem;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tooltipEvent {
+  display: grid;
+  width: 100%;
+  gap: 0.14rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-align: left;
+}
+
+.tooltipEvent:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .bookedDay:hover .tooltip {
@@ -445,13 +467,22 @@
 
 .activityItem {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 1rem;
   align-items: center;
   padding: 0.85rem 0.95rem;
   border-radius: 5px;
   background: rgba(248, 244, 238, 0.84);
   border: 1px solid rgba(92, 90, 84, 0.08);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.activityItem:hover {
+  background: rgba(240, 235, 228, 0.94);
+  border-color: rgba(92, 90, 84, 0.14);
 }
 
 .activityTitle {
@@ -474,6 +505,30 @@
   font-size: 0.84rem;
   font-weight: 500;
   text-align: right;
+}
+
+.editIcon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 5px;
+  background: rgba(54, 80, 58, 0.08);
+  color: #36503a;
+}
+
+.editIcon svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.activityItem:hover .editIcon {
+  background: rgba(54, 80, 58, 0.14);
 }
 
 .aside {
@@ -681,11 +736,16 @@
   }
 
   .activityItem {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.55rem;
   }
 
   .activityDetails {
     text-align: left;
+  }
+
+  .editIcon {
+    grid-column: 2;
+    grid-row: 1 / span 2;
   }
 }

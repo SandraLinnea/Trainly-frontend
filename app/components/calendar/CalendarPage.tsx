@@ -61,6 +61,16 @@ function sortEvents(events: CalendarEvent[]) {
   });
 }
 
+function EditActivityIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 18.6c2.3 1 5 .9 8.2-.4 2.9-1.2 4.7-1.1 5.8.3" />
+      <path d="M14.9 4.2 19.8 9l-8.7 8.7-5.2 1.2 1.2-5.2 7.8-9.5z" />
+      <path d="m13.2 6.3 4.4 4.4" />
+    </svg>
+  );
+}
+
 export default function CalendarPage() {
   const [visibleMonth, setVisibleMonth] = useState({
     year: today.getFullYear(),
@@ -71,6 +81,7 @@ export default function CalendarPage() {
   const [error, setError] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isActivityListOpen, setIsActivityListOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -211,6 +222,59 @@ export default function CalendarPage() {
     }
   };
 
+  const handleUpdateActivity = async (event: CalendarEvent) => {
+    setError("");
+
+    try {
+      const response = await fetch(getApiUrl(`/api/calendar/${event.id}`), {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          date: event.date,
+          title: event.title,
+          time: event.time,
+          type: event.type,
+          location: event.location,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(await readApiError(response, "Kunde inte uppdatera aktivitet."));
+      }
+
+      const data = (await response.json()) as CalendarEventResponse;
+      setEvents((current) =>
+        sortEvents(current.map((entry) => (entry.id === data.event.id ? data.event : entry))),
+      );
+      setSelectedEvent(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunde inte uppdatera aktivitet.");
+    }
+  };
+
+  const handleDeleteActivity = async (event: CalendarEvent) => {
+    setError("");
+
+    try {
+      const response = await fetch(getApiUrl(`/api/calendar/${event.id}`), {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error(await readApiError(response, "Kunde inte ta bort aktivitet."));
+      }
+
+      setEvents((current) => current.filter((entry) => entry.id !== event.id));
+      setSelectedEvent(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunde inte ta bort aktivitet.");
+    }
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.shell}>
@@ -291,13 +355,18 @@ export default function CalendarPage() {
 
                               <div className={styles.tooltip} role="note">
                                 {cell.dayEvents.map((event) => (
-                                  <div key={event.id} className={styles.tooltipEvent}>
+                                  <button
+                                    key={event.id}
+                                    className={styles.tooltipEvent}
+                                    type="button"
+                                    onClick={() => setSelectedEvent(event)}
+                                  >
                                     <strong>{event.title}</strong>
                                     <span>
                                       {event.time} · {event.type}
                                     </span>
                                     <span>{event.location}</span>
-                                  </div>
+                                  </button>
                                 ))}
                               </div>
                             </>
@@ -374,6 +443,16 @@ export default function CalendarPage() {
         defaultMonth={visibleMonth.month}
       />
 
+      <AddActivityModal
+        open={Boolean(selectedEvent)}
+        onClose={() => setSelectedEvent(null)}
+        onSave={handleUpdateActivity}
+        onDelete={handleDeleteActivity}
+        defaultYear={visibleMonth.year}
+        defaultMonth={visibleMonth.month}
+        event={selectedEvent}
+      />
+
       {isActivityListOpen ? (
         <div
           className={styles.activityOverlay}
@@ -405,7 +484,15 @@ export default function CalendarPage() {
             <div className={styles.activityList}>
               {events.length > 0 ? (
                 events.map((event) => (
-                  <article className={styles.activityItem} key={event.id}>
+                  <button
+                    className={styles.activityItem}
+                    key={event.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedEvent(event);
+                      setIsActivityListOpen(false);
+                    }}
+                  >
                     <div>
                       <h3 className={styles.activityTitle}>{event.title}</h3>
                       <p className={styles.activityMeta}>
@@ -417,7 +504,10 @@ export default function CalendarPage() {
                       <span>{event.type}</span>
                       <span>{event.location}</span>
                     </div>
-                  </article>
+                    <span className={styles.editIcon}>
+                      <EditActivityIcon />
+                    </span>
+                  </button>
                 ))
               ) : (
                 <p className={styles.status}>Du har inte lagt till några aktiviteter än.</p>
