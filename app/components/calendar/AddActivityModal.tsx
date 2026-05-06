@@ -1,8 +1,10 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import styles from "./AddActivityModal.module.css";
 import CloseIcon from "../icons/CloseIcon";
+import DeleteConfirmModal from "../shared/DeleteConfirmModal";
+import editModal from "../shared/EditModal.module.css";
+import modalButtons from "../shared/ModalButtons.module.css";
 
 export type CalendarEvent = {
   id: string;
@@ -52,6 +54,8 @@ export default function AddActivityModal({
   event,
 }: AddActivityModalProps) {
   const [form, setForm] = useState<FormState>(initialForm);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
   const isEditing = Boolean(event);
 
   const defaultDate = `${defaultYear}-${String(defaultMonth + 1).padStart(2, "0")}-01`;
@@ -77,6 +81,8 @@ export default function AddActivityModal({
     }
 
     setForm(initialForm);
+    setIsDeleteConfirmOpen(false);
+    setIsSaveConfirmOpen(false);
   }, [defaultDate, event, open]);
 
   if (!open) {
@@ -88,9 +94,7 @@ export default function AddActivityModal({
     setForm((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = (submitEvent: FormEvent<HTMLFormElement>) => {
-    submitEvent.preventDefault();
-
+  const saveActivity = () => {
     const [year, month, day] = form.date.split("-").map(Number);
 
     onSave({
@@ -106,25 +110,37 @@ export default function AddActivityModal({
     });
   };
 
+  const handleSubmit = (submitEvent: FormEvent<HTMLFormElement>) => {
+    submitEvent.preventDefault();
+
+    if (isEditing) {
+      setIsSaveConfirmOpen(true);
+      return;
+    }
+
+    saveActivity();
+  };
+
   return (
-    <div className={styles.overlay} onClick={onClose} role="presentation">
+    <>
+      <div className={editModal.overlay} onClick={onClose} role="presentation">
       <div
-        className={styles.modal}
+        className={`${editModal.modal} ${editModal.compactModal}`}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-activity-title"
       >
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.header}>
+        <form className={editModal.form} onSubmit={handleSubmit}>
+          <div className={editModal.header}>
             <div>
-              <h2 id="add-activity-title" className={styles.title}>
+              <h2 id="add-activity-title" className={editModal.title}>
                 {isEditing ? "Redigera aktivitet" : "Lägg till aktivitet"}
               </h2>
             </div>
 
             <button
-              className={styles.closeButton}
+              className={editModal.closeButton}
               type="button"
               onClick={onClose}
               aria-label="Stang"
@@ -133,11 +149,11 @@ export default function AddActivityModal({
             </button>
           </div>
 
-          <div className={styles.row}>
-            <label className={styles.field}>
-              <span className={styles.label}>Datum</span>
+          <div className={editModal.row}>
+            <label className={editModal.field}>
+              <span className={editModal.label}>Datum</span>
               <input
-                className={styles.input}
+                className={editModal.input}
                 type="date"
                 name="date"
                 value={form.date}
@@ -146,10 +162,10 @@ export default function AddActivityModal({
               />
             </label>
 
-            <label className={styles.field}>
-              <span className={styles.label}>Tid</span>
+            <label className={editModal.field}>
+              <span className={editModal.label}>Tid</span>
               <input
-                className={styles.input}
+                className={editModal.input}
                 type="time"
                 name="time"
                 value={form.time}
@@ -159,10 +175,10 @@ export default function AddActivityModal({
             </label>
           </div>
 
-          <label className={styles.field}>
-            <span className={styles.label}>Titel</span>
+          <label className={editModal.field}>
+            <span className={editModal.label}>Titel</span>
             <input
-              className={styles.input}
+              className={editModal.input}
               name="title"
               value={form.title}
               onChange={handleChange}
@@ -171,11 +187,11 @@ export default function AddActivityModal({
             />
           </label>
 
-          <div className={styles.row}>
-            <label className={styles.field}>
-              <span className={styles.label}>Typ</span>
+          <div className={editModal.row}>
+            <label className={editModal.field}>
+              <span className={editModal.label}>Typ</span>
               <input
-                className={styles.input}
+                className={editModal.input}
                 name="type"
                 value={form.type}
                 onChange={handleChange}
@@ -184,10 +200,10 @@ export default function AddActivityModal({
               />
             </label>
 
-            <label className={styles.field}>
-              <span className={styles.label}>Plats</span>
+            <label className={editModal.field}>
+              <span className={editModal.label}>Plats</span>
               <input
-                className={styles.input}
+                className={editModal.input}
                 name="location"
                 value={form.location}
                 onChange={handleChange}
@@ -197,16 +213,16 @@ export default function AddActivityModal({
             </label>
           </div>
 
-          <div className={styles.actions}>
-            <button className={styles.saveButton} type="submit">
+          <div className={modalButtons.actions}>
+            <button className={modalButtons.saveButton} type="submit">
               {isEditing ? "Spara ändringar" : "Spara aktivitet"}
             </button>
 
             {isEditing && event && onDelete ? (
               <button
-                className={styles.deleteButton}
+                className={modalButtons.deleteButton}
                 type="button"
-                onClick={() => onDelete(event)}
+                onClick={() => setIsDeleteConfirmOpen(true)}
               >
                 Ta bort
               </button>
@@ -214,6 +230,26 @@ export default function AddActivityModal({
           </div>
         </form>
       </div>
-    </div>
+      </div>
+
+      <DeleteConfirmModal
+        open={isDeleteConfirmOpen}
+        message="Är du säker på att du vill ta bort aktiviteten?"
+        onCancel={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={() => {
+          if (event && onDelete) {
+            onDelete(event);
+          }
+        }}
+      />
+
+      <DeleteConfirmModal
+        open={isSaveConfirmOpen}
+        message="Är du säker på att du vill spara ändringarna?"
+        variant="save"
+        onCancel={() => setIsSaveConfirmOpen(false)}
+        onConfirm={saveActivity}
+      />
+    </>
   );
 }

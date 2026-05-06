@@ -1,0 +1,75 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(25, 27, 25, 0.42);
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  width: min(100%, 390px);
+  border-radius: 5px;
+  border: 1px solid rgba(75, 78, 72, 0.12);
+  background:
+    linear-gradient(180deg, rgba(252, 249, 245, 0.98), rgba(246, 242, 237, 0.98)),
+    url("/images/Background.png") center/cover no-repeat;
+  box-shadow: 0 28px 70px rgba(24, 24, 22, 0.24);
+  padding: 1.15rem;
+}
+
+.title {
+  margin: 0;
+  color: #262420;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  margin-top: 1.1rem;
+}
+
+.yesButton,
+.noButton {
+  border-radius: 5px;
+  padding: 0.58rem 0.95rem;
+  font: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.noButton {
+  border: 1px solid rgba(77, 80, 73, 0.16);
+  background: rgba(255, 252, 248, 0.72);
+  color: #302d29;
+}
+
+.yesButton {
+  border: 1px solid rgba(135, 50, 44, 0.24);
+  background: rgba(135, 50, 44, 0.1);
+  color: #87322c;
+}
+
+.noButton:hover {
+  background: rgba(255, 252, 248, 0.95);
+}
+
+.yesButton:hover {
+  background: rgba(135, 50, 44, 0.16);
+}
+
+.saveButton {
+  border-color: rgba(54, 80, 58, 0.24);
+  background: #36503a;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.saveButton:hover {
+  background: #2f4632;
+}

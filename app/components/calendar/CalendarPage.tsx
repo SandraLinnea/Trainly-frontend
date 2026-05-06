@@ -5,6 +5,7 @@ import AsideNav from "../nav/AsideNav";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
 import CloseIcon from "../icons/CloseIcon";
+import PenIcon from "../icons/PenIcon";
 import { getApiUrl, readApiError } from "../../lib/api";
 import AddActivityModal, { CalendarEvent } from "./AddActivityModal";
 import styles from "./CalendarPage.module.css";
@@ -59,16 +60,6 @@ function sortEvents(events: CalendarEvent[]) {
 
     return a.time.localeCompare(b.time);
   });
-}
-
-function EditActivityIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M5 18.6c2.3 1 5 .9 8.2-.4 2.9-1.2 4.7-1.1 5.8.3" />
-      <path d="M14.9 4.2 19.8 9l-8.7 8.7-5.2 1.2 1.2-5.2 7.8-9.5z" />
-      <path d="m13.2 6.3 4.4 4.4" />
-    </svg>
-  );
 }
 
 export default function CalendarPage() {
@@ -505,7 +496,7 @@ export default function CalendarPage() {
                       <span>{event.location}</span>
                     </div>
                     <span className={styles.editIcon}>
-                      <EditActivityIcon />
+                      <PenIcon />
                     </span>
                   </button>
                 ))

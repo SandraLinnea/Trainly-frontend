@@ -1,0 +1,57 @@
+.actions {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.2rem;
+}
+
+.saveButton,
+.deleteButton {
+  border-radius: 5px;
+  padding: 0.58rem 0.95rem;
+  font: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
+  white-space: nowrap;
+}
+
+.saveButton {
+  margin-left: auto;
+  border: 1px solid rgba(54, 80, 58, 0.24);
+  background: #36503a;
+  color: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14px 28px rgba(54, 80, 58, 0.18);
+}
+
+.deleteButton {
+  order: -1;
+  border: 1px solid rgba(135, 50, 44, 0.24);
+  background: rgba(135, 50, 44, 0.08);
+  color: #87322c;
+}
+
+.saveButton:hover {
+  background: #2f4632;
+  transform: translateY(-1px);
+}
+
+.deleteButton:hover {
+  background: rgba(135, 50, 44, 0.14);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 520px) {
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .saveButton {
+    margin-left: 0;
+  }
+}

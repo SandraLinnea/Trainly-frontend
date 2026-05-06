@@ -29,7 +29,7 @@ const items: NavItem[] = [
   { href: "/competitions", label: "SBK Tävling", Icon: TrophyIcon },
   { href: "/shopping", label: "Shopping", Icon: ShoppingIcon },
   {
-    href: "/svenska-brukshundsklubben",
+    href: "/SvWorkingDog",
     label: "Svenska brukshundsklubben",
     Icon: DogClubIcon,
   },
@@ -38,7 +38,7 @@ const items: NavItem[] = [
 
 const authenticatedItems: NavItem[] = [
   {
-    href: "/training-inspiration",
+    href: "/TrainingInspiration",
     label: "Träningsinspiration",
     Icon: TrainingInspirationIcon,
   },
