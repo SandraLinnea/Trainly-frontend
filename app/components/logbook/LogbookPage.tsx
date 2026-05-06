@@ -9,7 +9,7 @@ import PenIcon from "../icons/PenIcon";
 import DeleteConfirmModal from "../shared/DeleteConfirmModal";
 import editModal from "../shared/EditModal.module.css";
 import modalButtons from "../shared/ModalButtons.module.css";
-import { getApiUrl } from "../../lib/api";
+import { getApiUrl, readApiError } from "../../lib/api";
 import styles from "./LogbookPage.module.css";
 
 type LogbookEntry = {
@@ -37,6 +37,14 @@ type DogsResponse = {
   dogs: DogOption[];
 };
 
+type LogbookResponse = {
+  entries: LogbookEntry[];
+};
+
+type LogbookEntryResponse = {
+  entry: LogbookEntry;
+};
+
 const todayValue = new Date().toISOString().slice(0, 10);
 
 const initialForm: FormState = {
@@ -46,16 +54,6 @@ const initialForm: FormState = {
   title: "",
   text: "",
 };
-
-const initialEntries: LogbookEntry[] = [
-  {
-    id: "demo-1",
-    date: todayValue,
-    dog: "Rex",
-    title: "Fokuspass med stadga",
-    text: "Kort pass med mycket belöning. Vi avslutade när känslan fortfarande var bra.",
-  },
-];
 
 const PAGE_SIZE = 5;
 
@@ -281,8 +279,10 @@ function EntryModal({
 }
 
 export default function LogbookPage() {
-  const [entries, setEntries] = useState<LogbookEntry[]>(initialEntries);
+  const [entries, setEntries] = useState<LogbookEntry[]>([]);
   const [dogs, setDogs] = useState<DogOption[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<LogbookEntry | null>(null);
   const [dogFilter, setDogFilter] = useState("all");
@@ -306,29 +306,53 @@ export default function LogbookPage() {
   useEffect(() => {
     let active = true;
 
-    async function loadDogs() {
+    async function loadData() {
       try {
-        const response = await fetch(getApiUrl("/api/dogs"), {
-          credentials: "include",
-        });
+        setLoading(true);
+        setErrorMessage("");
 
-        if (!response.ok) {
-          return;
+        const [dogsResponse, logbookResponse] = await Promise.all([
+          fetch(getApiUrl("/api/dogs"), {
+            credentials: "include",
+          }),
+          fetch(getApiUrl("/api/logbook"), {
+            credentials: "include",
+          }),
+        ]);
+
+        if (!dogsResponse.ok) {
+          throw new Error(await readApiError(dogsResponse, "Kunde inte hämta hundar."));
         }
 
-        const data = (await response.json()) as DogsResponse;
+        if (!logbookResponse.ok) {
+          throw new Error(
+            await readApiError(logbookResponse, "Kunde inte hämta dagboksinlägg."),
+          );
+        }
+
+        const dogsData = (await dogsResponse.json()) as DogsResponse;
+        const logbookData = (await logbookResponse.json()) as LogbookResponse;
 
         if (active) {
-          setDogs(data.dogs.map((dog) => ({ id: dog.id, name: dog.name })));
+          setDogs(dogsData.dogs.map((dog) => ({ id: dog.id, name: dog.name })));
+          setEntries(logbookData.entries);
         }
-      } catch {
+      } catch (error) {
         if (active) {
+          setErrorMessage(
+            error instanceof Error ? error.message : "Kunde inte hämta dagboken.",
+          );
           setDogs([]);
+          setEntries([]);
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
         }
       }
     }
 
-    void loadDogs();
+    void loadData();
 
     return () => {
       active = false;
@@ -361,23 +385,56 @@ export default function LogbookPage() {
     );
   }
 
-  function handleSave(entry: LogbookEntry) {
-    setEntries((current) => {
-      const exists = current.some((item) => item.id === entry.id);
+  async function handleSave(entry: LogbookEntry) {
+    const isEditing = Boolean(selectedEntry);
+    const response = await fetch(
+      getApiUrl(isEditing && selectedEntry ? `/api/logbook/${selectedEntry.id}` : "/api/logbook"),
+      {
+        method: isEditing ? "PATCH" : "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          date: entry.date,
+          dog: entry.dog,
+          title: entry.title,
+          text: entry.text,
+        }),
+      },
+    );
 
-      if (exists) {
-        return current.map((item) => (item.id === entry.id ? entry : item));
-      }
+    if (!response.ok) {
+      setErrorMessage(await readApiError(response, "Kunde inte spara dagboksinlägg."));
+      return;
+    }
 
-      return [entry, ...current];
-    });
+    const data = (await response.json()) as LogbookEntryResponse;
 
+    setEntries((current) =>
+      isEditing
+        ? current.map((item) => (item.id === data.entry.id ? data.entry : item))
+        : [data.entry, ...current],
+    );
+
+    setErrorMessage("");
     setIsModalOpen(false);
     setSelectedEntry(null);
   }
 
-  function handleDelete(entry: LogbookEntry) {
+  async function handleDelete(entry: LogbookEntry) {
+    const response = await fetch(getApiUrl(`/api/logbook/${entry.id}`), {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      setErrorMessage(await readApiError(response, "Kunde inte ta bort dagboksinlägg."));
+      return;
+    }
+
     setEntries((current) => current.filter((item) => item.id !== entry.id));
+    setErrorMessage("");
     setIsModalOpen(false);
     setSelectedEntry(null);
   }
@@ -437,8 +494,12 @@ export default function LogbookPage() {
                 </button>
               </div>
 
+              {errorMessage ? <p className={styles.empty}>{errorMessage}</p> : null}
+
               <div className={styles.entries}>
-                {paginatedEntries.length > 0 ? (
+                {loading ? (
+                  <p className={styles.empty}>Hämtar dagboken...</p>
+                ) : paginatedEntries.length > 0 ? (
                   paginatedEntries.map((entry) => (
                     <article
                       className={`${styles.entry} ${
