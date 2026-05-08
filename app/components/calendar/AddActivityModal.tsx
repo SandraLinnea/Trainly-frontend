@@ -16,6 +16,13 @@ export type CalendarEvent = {
   time: string;
   type: string;
   location: string;
+  sharedWithUserId?: string;
+  addedByName?: string;
+};
+
+export type ActivityFriend = {
+  id: string;
+  name: string;
 };
 
 type AddActivityModalProps = {
@@ -26,6 +33,7 @@ type AddActivityModalProps = {
   defaultYear: number;
   defaultMonth: number;
   event?: CalendarEvent | null;
+  friends?: ActivityFriend[];
 };
 
 type FormState = {
@@ -34,6 +42,7 @@ type FormState = {
   time: string;
   type: string;
   location: string;
+  sharedWithUserId: string;
 };
 
 const initialForm: FormState = {
@@ -42,6 +51,7 @@ const initialForm: FormState = {
   time: "",
   type: "",
   location: "",
+  sharedWithUserId: "",
 };
 
 export default function AddActivityModal({
@@ -52,6 +62,7 @@ export default function AddActivityModal({
   defaultYear,
   defaultMonth,
   event,
+  friends = [],
 }: AddActivityModalProps) {
   const [form, setForm] = useState<FormState>(initialForm);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
@@ -69,6 +80,7 @@ export default function AddActivityModal({
           time: event.time,
           type: event.type,
           location: event.location,
+          sharedWithUserId: "",
         });
         return;
       }
@@ -89,7 +101,7 @@ export default function AddActivityModal({
     return null;
   }
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
   };
@@ -107,6 +119,7 @@ export default function AddActivityModal({
       time: form.time.trim(),
       type: form.type.trim(),
       location: form.location.trim(),
+      sharedWithUserId: form.sharedWithUserId,
     });
   };
 
@@ -212,6 +225,25 @@ export default function AddActivityModal({
               />
             </label>
           </div>
+
+          {!isEditing && friends.length > 0 ? (
+            <label className={editModal.field}>
+              <span className={editModal.label}>Dela med vän</span>
+              <select
+                className={editModal.input}
+                name="sharedWithUserId"
+                value={form.sharedWithUserId}
+                onChange={handleChange}
+              >
+                <option value="">Dela inte</option>
+                {friends.map((friend) => (
+                  <option key={friend.id} value={friend.id}>
+                    {friend.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
 
           <div className={modalButtons.actions}>
             <button className={modalButtons.saveButton} type="submit">

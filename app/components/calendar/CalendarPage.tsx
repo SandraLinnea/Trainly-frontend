@@ -7,7 +7,7 @@ import Header from "../header/Header";
 import CloseIcon from "../icons/CloseIcon";
 import PenIcon from "../icons/PenIcon";
 import { getApiUrl, readApiError } from "../../lib/api";
-import AddActivityModal, { CalendarEvent } from "./AddActivityModal";
+import AddActivityModal, { ActivityFriend, CalendarEvent } from "./AddActivityModal";
 import styles from "./CalendarPage.module.css";
 
 const weekdays = ["Man", "Tis", "Ons", "Tor", "Fre", "Lör", "Sön"];
@@ -34,6 +34,10 @@ type CalendarResponse = {
 
 type CalendarEventResponse = {
   event: CalendarEvent;
+};
+
+type FriendsResponse = {
+  friends: ActivityFriend[];
 };
 
 function getMonthLabel(monthIndex: number, year: number) {
@@ -73,6 +77,7 @@ export default function CalendarPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isActivityListOpen, setIsActivityListOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [friends, setFriends] = useState<ActivityFriend[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -107,6 +112,38 @@ export default function CalendarPage() {
     }
 
     void loadEvents();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadFriends() {
+      try {
+        const response = await fetch(getApiUrl("/api/friends"), {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = (await response.json()) as FriendsResponse;
+
+        if (active) {
+          setFriends(data.friends);
+        }
+      } catch {
+        if (active) {
+          setFriends([]);
+        }
+      }
+    }
+
+    void loadFriends();
 
     return () => {
       active = false;
@@ -198,6 +235,7 @@ export default function CalendarPage() {
           time: event.time,
           type: event.type,
           location: event.location,
+          sharedWithUserId: event.sharedWithUserId,
         }),
       });
 
@@ -357,6 +395,9 @@ export default function CalendarPage() {
                                       {event.time} · {event.type}
                                     </span>
                                     <span>{event.location}</span>
+                                    {event.addedByName ? (
+                                      <span>Tillagd av {event.addedByName}</span>
+                                    ) : null}
                                   </button>
                                 ))}
                               </div>
@@ -409,6 +450,12 @@ export default function CalendarPage() {
                         <dt>Plats</dt>
                         <dd>{nextActivity.location}</dd>
                       </div>
+                      {nextActivity.addedByName ? (
+                        <div className={styles.nextRow}>
+                          <dt>Tillagd av</dt>
+                          <dd>{nextActivity.addedByName}</dd>
+                        </div>
+                      ) : null}
                     </dl>
                   ) : (
                     <p className={styles.nextHint}>Lägg till din första aktivitet.</p>
@@ -432,6 +479,7 @@ export default function CalendarPage() {
         onSave={handleAddActivity}
         defaultYear={visibleMonth.year}
         defaultMonth={visibleMonth.month}
+        friends={friends}
       />
 
       <AddActivityModal
@@ -494,6 +542,7 @@ export default function CalendarPage() {
                     <div className={styles.activityDetails}>
                       <span>{event.type}</span>
                       <span>{event.location}</span>
+                      {event.addedByName ? <span>Tillagd av {event.addedByName}</span> : null}
                     </div>
                     <span className={styles.editIcon}>
                       <PenIcon />

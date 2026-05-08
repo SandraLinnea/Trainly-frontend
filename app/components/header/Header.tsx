@@ -8,6 +8,8 @@ import { getApiUrl } from "../../lib/api";
 import LogoLink from "../brand/LogoLink";
 import styles from "./Header.module.css";
 
+const FRIEND_REQUESTS_CHANGED_EVENT = "trainly:friendRequestsChanged";
+
 function navClass(
   baseClass: string,
   activeClass: string,
@@ -20,10 +22,15 @@ type HeaderProps = {
   requireAuth?: boolean;
 };
 
+type FriendNotificationsResponse = {
+  requests?: unknown[];
+};
+
 export default function Header({ requireAuth = true }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -54,6 +61,42 @@ export default function Header({ requireAuth = true }: HeaderProps) {
     };
   }, [requireAuth, router]);
 
+  useEffect(() => {
+    async function updateUnreadMessages() {
+      let requestCount = 0;
+
+      if (requireAuth) {
+        try {
+          const response = await fetch(getApiUrl("/api/friends"), {
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const data = (await response.json()) as FriendNotificationsResponse;
+            requestCount = data.requests?.length ?? 0;
+          }
+        } catch {
+          requestCount = 0;
+        }
+      }
+
+      setUnreadMessages(requestCount);
+    }
+
+    const handleUnreadMessagesChange = () => {
+      void updateUnreadMessages();
+    };
+
+    handleUnreadMessagesChange();
+    window.addEventListener(FRIEND_REQUESTS_CHANGED_EVENT, handleUnreadMessagesChange);
+    window.addEventListener("storage", handleUnreadMessagesChange);
+
+    return () => {
+      window.removeEventListener(FRIEND_REQUESTS_CHANGED_EVENT, handleUnreadMessagesChange);
+      window.removeEventListener("storage", handleUnreadMessagesChange);
+    };
+  }, [requireAuth]);
+
   async function handleLogout() {
     if (loggingOut) return;
 
@@ -75,7 +118,7 @@ export default function Header({ requireAuth = true }: HeaderProps) {
     <header className={styles.header}>
       <div className={styles.brand}>
         <LogoLink
-          width={175}
+          width={132}
           height={73}
           className={styles.logoLink}
           imageClassName={styles.logo}
@@ -110,7 +153,12 @@ export default function Header({ requireAuth = true }: HeaderProps) {
           className={navClass(styles.link, styles.active, pathname === "/friends")}
           prefetch={false}
         >
-          Vänner
+          <span>Vänner</span>
+          {unreadMessages > 0 ? (
+            <span className={styles.badge} aria-label={`${unreadMessages} notifieringar`}>
+              {unreadMessages}
+            </span>
+          ) : null}
         </Link>
       </nav>
 

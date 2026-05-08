@@ -66,7 +66,7 @@ export default function Login() {
     <div className={styles.page}>
       <div className={styles.shell}>
         <div className={styles.headerRow}>
-          <LogoLink width={180} height={75} />
+          <LogoLink width={138} height={75} />
         </div>
 
         <main className={styles.main}>

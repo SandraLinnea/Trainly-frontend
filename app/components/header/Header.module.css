@@ -43,6 +43,10 @@ nav.actions {
 }
 
 .link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   color: rgba(249, 243, 235, 0.94);
   text-decoration: none;
   font-size: 1rem;
@@ -59,6 +63,20 @@ nav.actions {
 .active {
   font-weight: 600;
   border-bottom-color: rgba(249, 243, 235, 0.9);
+}
+
+.badge {
+  display: grid;
+  place-items: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.28rem;
+  border-radius: 999px;
+  background: #87322c;
+  color: #fff8f1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .button {
