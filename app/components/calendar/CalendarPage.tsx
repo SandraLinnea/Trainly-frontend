@@ -70,6 +70,14 @@ function sortEvents(events: CalendarEvent[]) {
   });
 }
 
+function getSharedWithName(event: CalendarEvent, friends: ActivityFriend[]) {
+  return (
+    event.sharedWithName ||
+    friends.find((friend) => friend.id === event.sharedWithUserId)?.name ||
+    ""
+  );
+}
+
 export default function CalendarPage() {
   const [visibleMonth, setVisibleMonth] = useState({
     year: today.getFullYear(),
@@ -255,7 +263,20 @@ export default function CalendarPage() {
       }
 
       const data = (await response.json()) as CalendarEventResponse;
-      setEvents((current) => sortEvents([...current, data.event]));
+      const sharedWithName =
+        data.event.sharedWithName ||
+        friends.find((friend) => friend.id === event.sharedWithUserId)?.name ||
+        "";
+      setEvents((current) =>
+        sortEvents([
+          ...current,
+          {
+            ...data.event,
+            sharedWithUserId: data.event.sharedWithUserId || event.sharedWithUserId,
+            sharedWithName,
+          },
+        ]),
+      );
       setIsAddModalOpen(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Kunde inte spara aktivitet.");
@@ -417,8 +438,8 @@ export default function CalendarPage() {
                                     {event.addedByName ? (
                                       <span>Tillagd av {event.addedByName}</span>
                                     ) : null}
-                                    {event.sharedWithName ? (
-                                      <span>Delas med {event.sharedWithName}</span>
+                                    {getSharedWithName(event, friends) ? (
+                                      <span>Delas med {getSharedWithName(event, friends)}</span>
                                     ) : null}
                                   </button>
                                 ))}
@@ -478,10 +499,10 @@ export default function CalendarPage() {
                           <dd>{nextActivity.addedByName}</dd>
                         </div>
                       ) : null}
-                      {nextActivity.sharedWithName ? (
+                      {getSharedWithName(nextActivity, friends) ? (
                         <div className={styles.nextRow}>
                           <dt>Delas med</dt>
-                          <dd>{nextActivity.sharedWithName}</dd>
+                          <dd>{getSharedWithName(nextActivity, friends)}</dd>
                         </div>
                       ) : null}
                     </dl>
@@ -571,7 +592,9 @@ export default function CalendarPage() {
                       <span>{event.type}</span>
                       <span>{event.location}</span>
                       {event.addedByName ? <span>Tillagd av {event.addedByName}</span> : null}
-                      {event.sharedWithName ? <span>Delas med {event.sharedWithName}</span> : null}
+                      {getSharedWithName(event, friends) ? (
+                        <span>Delas med {getSharedWithName(event, friends)}</span>
+                      ) : null}
                     </div>
                     <span className={styles.editIcon}>
                       <PenIcon />
