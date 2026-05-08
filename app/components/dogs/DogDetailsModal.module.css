@@ -92,6 +92,13 @@
   object-fit: cover;
 }
 
+.noImage {
+  width: 100%;
+  height: 180px;
+  background:
+    linear-gradient(135deg, rgba(226, 222, 214, 0.86), rgba(246, 242, 236, 0.92));
+}
+
 .details {
   display: grid;
   gap: 0.42rem;
@@ -180,7 +187,8 @@
     bottom: 0;
   }
 
-  .image {
+  .image,
+  .noImage {
     height: 220px;
   }
 }
@@ -211,7 +219,8 @@
     font-size: 0.82rem;
   }
 
-  .image {
+  .image,
+  .noImage {
     height: 156px;
   }
 
@@ -240,7 +249,8 @@
     grid-template-columns: 220px minmax(0, 1fr);
   }
 
-  .image {
+  .image,
+  .noImage {
     height: 164px;
   }
 
@@ -280,7 +290,8 @@
     font-size: 0.84rem;
   }
 
-  .image {
+  .image,
+  .noImage {
     height: 142px;
   }
 

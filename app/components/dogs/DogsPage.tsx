@@ -179,10 +179,14 @@ export default function DogsPage() {
                   >
                     <div
                       className={styles.cardImage}
-                      style={{
-                        backgroundImage: `url("${dog.imageSrc}")`,
-                        backgroundPosition: dog.imagePosition,
-                      }}
+                      style={
+                        dog.imageSrc
+                          ? {
+                              backgroundImage: `url("${dog.imageSrc}")`,
+                              backgroundPosition: dog.imagePosition,
+                            }
+                          : undefined
+                      }
                       aria-hidden
                     />
 

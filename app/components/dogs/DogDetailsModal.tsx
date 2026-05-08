@@ -72,7 +72,11 @@ export default function DogDetailsModal({
       >
         <div className={styles.card}>
           <div className={styles.imageWrap}>
-            <img className={styles.image} src={dog.imageSrc} alt={dog.name} />
+            {dog.imageSrc ? (
+              <img className={styles.image} src={dog.imageSrc} alt={dog.name} />
+            ) : (
+              <div className={styles.noImage} aria-hidden />
+            )}
           </div>
 
           <div className={styles.content}>

@@ -84,6 +84,8 @@
 
 .cardImage {
   height: 250px;
+  background:
+    linear-gradient(135deg, rgba(226, 222, 214, 0.86), rgba(246, 242, 236, 0.92));
   background-size: cover;
   background-repeat: no-repeat;
 }

@@ -14,7 +14,7 @@ export type NewDogFormData = {
   height: string;
   weight: string;
   registrationNumber: string;
-  imageSrc: string;
+  imageSrc: string | null;
 };
 
 type AddDogModalProps = {
@@ -110,7 +110,7 @@ export default function AddDogModal({
       height: form.height.trim(),
       weight: form.weight.trim(),
       registrationNumber: form.registrationNumber.trim(),
-      imageSrc: previewUrl || "/images/Playingdog.jpg",
+      imageSrc: previewUrl || null,
     });
   };
 

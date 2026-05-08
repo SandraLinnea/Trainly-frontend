@@ -398,6 +398,9 @@ export default function CalendarPage() {
                                     {event.addedByName ? (
                                       <span>Tillagd av {event.addedByName}</span>
                                     ) : null}
+                                    {event.sharedWithName ? (
+                                      <span>Delas med {event.sharedWithName}</span>
+                                    ) : null}
                                   </button>
                                 ))}
                               </div>
@@ -454,6 +457,12 @@ export default function CalendarPage() {
                         <div className={styles.nextRow}>
                           <dt>Tillagd av</dt>
                           <dd>{nextActivity.addedByName}</dd>
+                        </div>
+                      ) : null}
+                      {nextActivity.sharedWithName ? (
+                        <div className={styles.nextRow}>
+                          <dt>Delas med</dt>
+                          <dd>{nextActivity.sharedWithName}</dd>
                         </div>
                       ) : null}
                     </dl>
@@ -543,6 +552,7 @@ export default function CalendarPage() {
                       <span>{event.type}</span>
                       <span>{event.location}</span>
                       {event.addedByName ? <span>Tillagd av {event.addedByName}</span> : null}
+                      {event.sharedWithName ? <span>Delas med {event.sharedWithName}</span> : null}
                     </div>
                     <span className={styles.editIcon}>
                       <PenIcon />

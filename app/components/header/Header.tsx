@@ -26,11 +26,18 @@ type FriendNotificationsResponse = {
   requests?: unknown[];
 };
 
+type CalendarNotificationsResponse = {
+  events?: {
+    addedByName?: string;
+  }[];
+};
+
 export default function Header({ requireAuth = true }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
-  const [unreadMessages, setUnreadMessages] = useState(0);
+  const [friendNotifications, setFriendNotifications] = useState(0);
+  const [calendarNotifications, setCalendarNotifications] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -62,7 +69,7 @@ export default function Header({ requireAuth = true }: HeaderProps) {
   }, [requireAuth, router]);
 
   useEffect(() => {
-    async function updateUnreadMessages() {
+    async function updateFriendNotifications() {
       let requestCount = 0;
 
       if (requireAuth) {
@@ -80,20 +87,58 @@ export default function Header({ requireAuth = true }: HeaderProps) {
         }
       }
 
-      setUnreadMessages(requestCount);
+      setFriendNotifications(requestCount);
     }
 
-    const handleUnreadMessagesChange = () => {
-      void updateUnreadMessages();
+    const handleFriendNotificationsChange = () => {
+      void updateFriendNotifications();
     };
 
-    handleUnreadMessagesChange();
-    window.addEventListener(FRIEND_REQUESTS_CHANGED_EVENT, handleUnreadMessagesChange);
-    window.addEventListener("storage", handleUnreadMessagesChange);
+    handleFriendNotificationsChange();
+    window.addEventListener(FRIEND_REQUESTS_CHANGED_EVENT, handleFriendNotificationsChange);
+    window.addEventListener("storage", handleFriendNotificationsChange);
 
     return () => {
-      window.removeEventListener(FRIEND_REQUESTS_CHANGED_EVENT, handleUnreadMessagesChange);
-      window.removeEventListener("storage", handleUnreadMessagesChange);
+      window.removeEventListener(FRIEND_REQUESTS_CHANGED_EVENT, handleFriendNotificationsChange);
+      window.removeEventListener("storage", handleFriendNotificationsChange);
+    };
+  }, [requireAuth]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function updateCalendarNotifications() {
+      if (!requireAuth) {
+        setCalendarNotifications(0);
+        return;
+      }
+
+      try {
+        const response = await fetch(getApiUrl("/api/calendar"), {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = (await response.json()) as CalendarNotificationsResponse;
+        const sharedEvents = data.events?.filter((event) => event.addedByName) ?? [];
+
+        if (active) {
+          setCalendarNotifications(sharedEvents.length);
+        }
+      } catch {
+        if (active) {
+          setCalendarNotifications(0);
+        }
+      }
+    }
+
+    void updateCalendarNotifications();
+
+    return () => {
+      active = false;
     };
   }, [requireAuth]);
 
@@ -139,7 +184,12 @@ export default function Header({ requireAuth = true }: HeaderProps) {
           className={navClass(styles.link, styles.active, pathname === "/calendar")}
           prefetch={false}
         >
-          Kalender
+          <span>Kalender</span>
+          {calendarNotifications > 0 ? (
+            <span className={styles.badge} aria-label={`${calendarNotifications} kalendernotifieringar`}>
+              {calendarNotifications}
+            </span>
+          ) : null}
         </Link>
         <Link
           href="/dogs"
@@ -154,9 +204,9 @@ export default function Header({ requireAuth = true }: HeaderProps) {
           prefetch={false}
         >
           <span>Vänner</span>
-          {unreadMessages > 0 ? (
-            <span className={styles.badge} aria-label={`${unreadMessages} notifieringar`}>
-              {unreadMessages}
+          {friendNotifications > 0 ? (
+            <span className={styles.badge} aria-label={`${friendNotifications} notifieringar`}>
+              {friendNotifications}
             </span>
           ) : null}
         </Link>

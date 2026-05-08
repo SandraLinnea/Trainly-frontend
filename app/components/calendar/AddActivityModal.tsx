@@ -18,6 +18,7 @@ export type CalendarEvent = {
   location: string;
   sharedWithUserId?: string;
   addedByName?: string;
+  sharedWithName?: string;
 };
 
 export type ActivityFriend = {
