@@ -480,6 +480,46 @@
   text-align: left;
 }
 
+.shareNoticeModal {
+  width: min(100%, 460px);
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, rgba(252, 249, 245, 0.98), rgba(246, 242, 237, 0.98)),
+    url("/images/Background.png") center/cover no-repeat;
+  border: 1px solid rgba(75, 78, 72, 0.12);
+  box-shadow: 0 34px 80px rgba(24, 24, 22, 0.2);
+  overflow: hidden;
+}
+
+.shareNoticeText {
+  margin: 0;
+  padding: 0.2rem 1.2rem 1rem;
+  color: #302d29;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.shareNoticeActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 1.2rem 1.2rem;
+}
+
+.shareNoticeButton {
+  border: 1px solid rgba(54, 80, 58, 0.24);
+  border-radius: 5px;
+  background: #36503a;
+  color: rgba(255, 255, 255, 0.96);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.92rem;
+  padding: 0.58rem 0.95rem;
+}
+
+.shareNoticeButton:hover {
+  background: #2f4632;
+}
+
 .activityItem:hover {
   background: rgba(240, 235, 228, 0.94);
   border-color: rgba(92, 90, 84, 0.14);

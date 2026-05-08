@@ -5,6 +5,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { getApiUrl } from "../../lib/api";
+import {
+  CALENDAR_NOTIFICATIONS_CHANGED_EVENT,
+  isSharedCalendarEventDismissed,
+} from "../../lib/calendarNotifications";
 import LogoLink from "../brand/LogoLink";
 import styles from "./Header.module.css";
 
@@ -28,6 +32,7 @@ type FriendNotificationsResponse = {
 
 type CalendarNotificationsResponse = {
   events?: {
+    id: string;
     addedByName?: string;
   }[];
 };
@@ -123,7 +128,10 @@ export default function Header({ requireAuth = true }: HeaderProps) {
         }
 
         const data = (await response.json()) as CalendarNotificationsResponse;
-        const sharedEvents = data.events?.filter((event) => event.addedByName) ?? [];
+        const sharedEvents =
+          data.events?.filter(
+            (event) => event.addedByName && !isSharedCalendarEventDismissed(event.id),
+          ) ?? [];
 
         if (active) {
           setCalendarNotifications(sharedEvents.length);
@@ -135,10 +143,22 @@ export default function Header({ requireAuth = true }: HeaderProps) {
       }
     }
 
-    void updateCalendarNotifications();
+    const handleCalendarNotificationsChange = () => {
+      void updateCalendarNotifications();
+    };
+
+    handleCalendarNotificationsChange();
+    window.addEventListener(
+      CALENDAR_NOTIFICATIONS_CHANGED_EVENT,
+      handleCalendarNotificationsChange,
+    );
 
     return () => {
       active = false;
+      window.removeEventListener(
+        CALENDAR_NOTIFICATIONS_CHANGED_EVENT,
+        handleCalendarNotificationsChange,
+      );
     };
   }, [requireAuth]);
 

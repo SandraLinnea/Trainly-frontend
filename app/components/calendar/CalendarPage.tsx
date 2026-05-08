@@ -7,6 +7,10 @@ import Header from "../header/Header";
 import CloseIcon from "../icons/CloseIcon";
 import PenIcon from "../icons/PenIcon";
 import { getApiUrl, readApiError } from "../../lib/api";
+import {
+  dismissSharedCalendarEvent,
+  isSharedCalendarEventDismissed,
+} from "../../lib/calendarNotifications";
 import AddActivityModal, { ActivityFriend, CalendarEvent } from "./AddActivityModal";
 import styles from "./CalendarPage.module.css";
 
@@ -77,6 +81,7 @@ export default function CalendarPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isActivityListOpen, setIsActivityListOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [sharedNoticeEvent, setSharedNoticeEvent] = useState<CalendarEvent | null>(null);
   const [friends, setFriends] = useState<ActivityFriend[]>([]);
 
   useEffect(() => {
@@ -98,7 +103,13 @@ export default function CalendarPage() {
         const data = (await response.json()) as CalendarResponse;
 
         if (active) {
-          setEvents(sortEvents(data.events));
+          const sortedEvents = sortEvents(data.events);
+          setEvents(sortedEvents);
+          setSharedNoticeEvent(
+            sortedEvents.find(
+              (event) => event.addedByName && !isSharedCalendarEventDismissed(event.id),
+            ) ?? null,
+          );
         }
       } catch (err) {
         if (active) {
@@ -302,6 +313,14 @@ export default function CalendarPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Kunde inte ta bort aktivitet.");
     }
+  };
+
+  const handleCloseSharedNotice = () => {
+    if (sharedNoticeEvent) {
+      dismissSharedCalendarEvent(sharedNoticeEvent.id);
+    }
+
+    setSharedNoticeEvent(null);
   };
 
   return (
@@ -562,6 +581,52 @@ export default function CalendarPage() {
               ) : (
                 <p className={styles.status}>Du har inte lagt till några aktiviteter än.</p>
               )}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {sharedNoticeEvent ? (
+        <div
+          className={styles.activityOverlay}
+          onClick={handleCloseSharedNotice}
+          role="presentation"
+        >
+          <div
+            className={styles.shareNoticeModal}
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="share-notice-title"
+          >
+            <div className={styles.activityModalHeader}>
+              <h2 id="share-notice-title" className={styles.activityModalTitle}>
+                Delad aktivitet
+              </h2>
+
+              <button
+                className={styles.activityCloseButton}
+                type="button"
+                onClick={handleCloseSharedNotice}
+                aria-label="Stäng"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <p className={styles.shareNoticeText}>
+              {sharedNoticeEvent.addedByName} vill dela en aktivitet den{" "}
+              {getEventDateLabel(sharedNoticeEvent)} med dig.
+            </p>
+
+            <div className={styles.shareNoticeActions}>
+              <button
+                className={styles.shareNoticeButton}
+                type="button"
+                onClick={handleCloseSharedNotice}
+              >
+                Okej
+              </button>
             </div>
           </div>
         </div>
