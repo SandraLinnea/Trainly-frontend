@@ -4,9 +4,12 @@ import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   icons: {
-    icon: "/images/TrainlyFavicon.png",
-    shortcut: "/images/TrainlyFavicon.png",
-    apple: "/images/TrainlyFavicon.png",
+    icon: [
+      { url: "/favicon.png?v=2", sizes: "32x32", type: "image/png" },
+      { url: "/images/TrainlyFavicon.png?v=2", sizes: "1024x1024", type: "image/png" },
+    ],
+    shortcut: "/favicon.png?v=2",
+    apple: "/apple-icon.png?v=2",
   },
 };
 

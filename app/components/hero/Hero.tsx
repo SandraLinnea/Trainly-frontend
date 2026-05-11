@@ -113,12 +113,13 @@ export default function Hero() {
           </p>
 
           <div className={styles.actions}>
-            <Link href="/auth/register" className={styles.primary}>
-              Skapa konto
-            </Link>
-            <Link href="/auth/login" className={styles.ghost}>
+            <Link href="/auth/login" className={styles.primary}>
               Logga in
             </Link>
+            <Link href="/auth/register" className={styles.ghost}>
+              Skapa konto
+            </Link>
+
           </div>
         </section>
 

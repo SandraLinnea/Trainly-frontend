@@ -3,16 +3,52 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 
+import { getApiUrl, readApiError } from "../../../lib/api";
 import LogoLink from "../../brand/LogoLink";
 import styles from "./ForgotPassword.module.css";
 
+type ForgotPasswordResponse = {
+  message?: string;
+  resetUrl?: string;
+};
+
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [message, setMessage] = useState("");
+  const [resetUrl, setResetUrl] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSent(true);
+    setMessage("");
+    setResetUrl("");
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await fetch(getApiUrl("/api/auth/forgot-password"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        setError(await readApiError(response, "Kunde inte skicka återställning."));
+        return;
+      }
+
+      const data = (await response.json()) as ForgotPasswordResponse;
+      setMessage(data.message || "Om kontot finns får du instruktioner för återställning.");
+      setResetUrl(data.resetUrl || "");
+    } catch {
+      setError("Kunde inte skicka återställning just nu.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -44,14 +80,18 @@ export default function ForgotPassword() {
                 required
               />
 
-              {sent ? (
-                <div className={styles.message}>
-                  Om kontot finns får du instruktioner för återställning.
-                </div>
+              {message ? <div className={styles.message}>{message}</div> : null}
+
+              {resetUrl ? (
+                <Link className={styles.resetLink} href={resetUrl}>
+                  Öppna återställningslänk
+                </Link>
               ) : null}
 
-              <button className={styles.submit} type="submit">
-                Skicka återställning
+              {error ? <div className={styles.error}>{error}</div> : null}
+
+              <button className={styles.submit} type="submit" disabled={loading}>
+                {loading ? "Skickar..." : "Skicka återställning"}
               </button>
             </form>
 
