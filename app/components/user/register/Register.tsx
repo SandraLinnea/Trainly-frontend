@@ -91,7 +91,7 @@ export default function Register() {
                   onChange={(e) => setFirstName(e.target.value)}
                   onFocus={clearSelection}
                   autoComplete="given-name"
-                  placeholder="Fornamn"
+                  placeholder="Förnamn"
                   required
                 />
               </div>
@@ -141,7 +141,7 @@ export default function Register() {
                   onChange={(e) => setPassword(e.target.value)}
                   onFocus={clearSelection}
                   autoComplete="new-password"
-                  placeholder="Losenord"
+                  placeholder="Lösenord"
                   required
                 />
                 <button

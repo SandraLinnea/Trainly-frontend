@@ -445,6 +445,7 @@ export default function FriendsPage() {
         open={friendRequestToAccept !== null}
         message={`Vill du lägga till ${friendRequestToAccept?.name ?? ""} som vän?`}
         variant="save"
+        onDismiss={() => setFriendRequestToAccept(null)}
         onCancel={() => {
           if (friendRequestToAccept) {
             void handleDeclineFriendRequest(friendRequestToAccept);

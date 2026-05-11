@@ -20,12 +20,51 @@
   padding: 1.15rem;
 }
 
+.header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.9rem;
+}
+
 .title {
   margin: 0;
   color: #262420;
   font-size: 1.05rem;
   font-weight: 600;
   line-height: 1.4;
+}
+
+.closeButton {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #5f5a52;
+  cursor: pointer;
+  padding: 0;
+}
+
+.closeButton:hover {
+  background: rgba(54, 80, 58, 0.08);
+  color: #262420;
+}
+
+.closeButton:focus-visible,
+.yesButton:focus-visible,
+.noButton:focus-visible {
+  outline: 3px solid #36503a;
+  outline-offset: 3px;
+}
+
+.closeButton svg {
+  width: 1rem;
+  height: 1rem;
+  stroke: currentColor;
 }
 
 .actions {
