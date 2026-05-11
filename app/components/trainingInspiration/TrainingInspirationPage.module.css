@@ -57,7 +57,7 @@
   color: #24211e;
   font-size: 2rem;
   font-weight: 500;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 
 .lead {
@@ -82,7 +82,8 @@
   font-weight: 700;
 }
 
-.field select {
+.field select,
+.field input {
   width: 100%;
   box-sizing: border-box;
   border: 1px solid rgba(71, 73, 67, 0.14);
@@ -94,14 +95,142 @@
   padding: 0.72rem 0.8rem;
 }
 
-.field select:focus {
+.field select:focus,
+.field input:focus {
   outline: 2px solid rgba(54, 80, 58, 0.22);
   outline-offset: 2px;
+}
+
+.searchField {
+  width: min(100%, calc(32rem + 0.85rem));
+  margin-top: 1rem;
+}
+
+.linkRow {
+  display: flex;
+  margin-top: 0.85rem;
+}
+
+.tipList {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.tipCard,
+.empty {
+  border-radius: 5px;
+  border: 1px solid rgba(92, 90, 84, 0.08);
+  background: rgba(248, 244, 238, 0.84);
+}
+
+.tipCard {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.95rem;
+}
+
+.tipBranch {
+  margin: 0;
+  color: #746d64;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tipTitle {
+  margin: 0;
+  color: #302d29;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.tipText,
+.tipProgression,
+.tipNote {
+  margin: 0;
+  color: #5a554d;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.tipProgression {
+  color: #36503a;
+  font-weight: 700;
+}
+
+.tipSection {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.tipSection h3 {
+  margin: 0;
+  color: #302d29;
+  font-size: 0.95rem;
+}
+
+.tipSection ul {
+  display: grid;
+  gap: 0.22rem;
+  margin: 0;
+  padding-left: 1.15rem;
+  color: #5a554d;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.tipNote {
+  padding: 0.75rem 0.85rem;
+  border-radius: 5px;
+  background: rgba(54, 80, 58, 0.08);
+  color: #36503a;
+  font-weight: 700;
+}
+
+.tipLink {
+  justify-self: start;
+  padding: 0.62rem 0.9rem;
+  border-radius: 5px;
+  border: 1px solid rgba(54, 80, 58, 0.2);
+  color: #36503a;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.tipLink:hover {
+  background: rgba(54, 80, 58, 0.08);
+}
+
+.tipLink:focus-visible {
+  outline: 3px solid #36503a;
+  outline-offset: 3px;
+}
+
+.empty {
+  margin: 0;
+  padding: 1rem;
+  color: #5f5a52;
+  font-size: 0.95rem;
 }
 
 .aside {
   display: grid;
   min-height: 100%;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (max-width: 960px) {

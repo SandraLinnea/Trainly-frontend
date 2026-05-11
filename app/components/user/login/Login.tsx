@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { FocusEvent, FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -16,25 +16,23 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function clearSelection(
-    e: React.FocusEvent<HTMLInputElement>
-  ) {
-    const { value } = e.currentTarget;
+  function clearSelection(event: FocusEvent<HTMLInputElement>) {
+    const { value } = event.currentTarget;
     const caretPosition = value.length;
 
     if (
-      e.currentTarget.type === "text" ||
-      e.currentTarget.type === "search" ||
-      e.currentTarget.type === "tel" ||
-      e.currentTarget.type === "url" ||
-      e.currentTarget.type === "password"
+      event.currentTarget.type === "text" ||
+      event.currentTarget.type === "search" ||
+      event.currentTarget.type === "tel" ||
+      event.currentTarget.type === "url" ||
+      event.currentTarget.type === "password"
     ) {
-      e.currentTarget.setSelectionRange(caretPosition, caretPosition);
+      event.currentTarget.setSelectionRange(caretPosition, caretPosition);
     }
   }
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     setError(null);
     setLoading(true);
 
@@ -49,7 +47,7 @@ export default function Login() {
       });
 
       if (!response.ok) {
-        setError(await readApiError(response, "Fel email eller losenord."));
+        setError(await readApiError(response, "Fel email eller lösenord."));
         return;
       }
 
@@ -72,7 +70,7 @@ export default function Login() {
         <main className={styles.main}>
           <section className={styles.card} aria-label="Logga in">
             <h1 className={styles.title}>Logga in</h1>
-            <p className={styles.subtitle}>Logga in pa ditt konto i Trainly</p>
+            <p className={styles.subtitle}>Logga in på ditt konto i Trainly</p>
 
             <form className={styles.form} onSubmit={onSubmit}>
               <label className={styles.srOnly} htmlFor="email">
@@ -84,11 +82,13 @@ export default function Login() {
                   className={styles.input}
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(event) => setEmail(event.target.value)}
                   onFocus={clearSelection}
                   autoComplete="email"
                   placeholder="Email"
                   required
+                  aria-invalid={error ? "true" : undefined}
+                  aria-describedby={error ? "login-error" : undefined}
                 />
                 <span className={styles.inputIcon} aria-hidden>
                   👤
@@ -104,23 +104,30 @@ export default function Login() {
                   className={styles.input}
                   type={showPw ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(event) => setPassword(event.target.value)}
                   onFocus={clearSelection}
                   autoComplete="current-password"
                   placeholder="Lösenord"
                   required
+                  aria-invalid={error ? "true" : undefined}
+                  aria-describedby={error ? "login-error" : undefined}
                 />
                 <button
                   type="button"
                   className={styles.eyeBtn}
-                  onClick={() => setShowPw((v) => !v)}
-                  aria-label={showPw ? "Dolj losenord" : "Visa losenord"}
+                  onClick={() => setShowPw((value) => !value)}
+                  aria-pressed={showPw}
+                  aria-label={showPw ? "Dölj lösenord" : "Visa lösenord"}
                 >
                   👁
                 </button>
               </div>
 
-              {error ? <div className={styles.error}>{error}</div> : null}
+              {error ? (
+                <div id="login-error" className={styles.error} role="alert">
+                  {error}
+                </div>
+              ) : null}
 
               <button className={styles.submit} disabled={loading}>
                 {loading ? "Loggar in..." : "Logga in"}
@@ -129,7 +136,9 @@ export default function Login() {
 
             <div className={styles.links}>
               <Link href="/auth/register">Registrera dig</Link>
-              <Link href="/auth/forgot" prefetch={false}>Glomt losenord?</Link>
+              <Link href="/auth/forgot" prefetch={false}>
+                Glömt lösenord?
+              </Link>
             </div>
           </section>
         </main>

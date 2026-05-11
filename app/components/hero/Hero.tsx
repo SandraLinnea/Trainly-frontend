@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import type { ComponentType, SVGProps } from "react";
-import { useState } from "react";
+import type { ComponentType, KeyboardEvent, SVGProps } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { CompetitionContent } from "../asidePages/competition/Competition";
 import { CoursesContent } from "../asidePages/courses/Courses";
@@ -78,8 +78,69 @@ const modalItems: ModalItem[] = [
 
 export default function Hero() {
   const [activeModal, setActiveModal] = useState<ModalKey | null>(null);
+  const modalRef = useRef<HTMLElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+  const wasModalOpenRef = useRef(false);
   const activeItem = modalItems.find((item) => item.key === activeModal);
   const ActiveContent = activeItem?.Content;
+  const modalTitleId = activeItem ? `quick-link-title-${activeItem.key}` : undefined;
+
+  function closeModal() {
+    setActiveModal(null);
+  }
+
+  function openModal(key: ModalKey) {
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    setActiveModal(key);
+  }
+
+  function handleModalKeyDown(event: KeyboardEvent<HTMLElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeModal();
+      return;
+    }
+
+    if (event.key !== "Tab" || !modalRef.current) {
+      return;
+    }
+
+    const focusable = Array.from(
+      modalRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      )
+    );
+
+    if (focusable.length === 0) {
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  useEffect(() => {
+    if (!activeModal) {
+      wasModalOpenRef.current = false;
+      previouslyFocusedRef.current?.focus();
+      return;
+    }
+
+    if (!wasModalOpenRef.current) {
+      closeButtonRef.current?.focus();
+    }
+
+    wasModalOpenRef.current = true;
+  }, [activeModal]);
 
   return (
     <main className={styles.main}>
@@ -124,16 +185,19 @@ export default function Hero() {
         </section>
 
         <aside className={styles.rightCol} aria-label="Snabblänkar">
-          <div className={styles.rightLine} />
+          <div className={styles.rightLine} aria-hidden="true" />
           <ul className={styles.list}>
             {modalItems.map(({ key, label, Icon }) => (
               <li key={key}>
                 <button
                   type="button"
                   className={styles.listItem}
-                  onClick={() => setActiveModal(key)}
+                  onClick={() => openModal(key)}
+                  aria-haspopup="dialog"
+                  aria-expanded={activeModal === key}
+                  aria-controls={activeModal === key ? "quick-link-dialog" : undefined}
                 >
-                  <Icon className={styles.icon} />
+                  <Icon className={styles.icon} aria-hidden="true" focusable="false" />
                   {label}
                 </button>
               </li>
@@ -157,14 +221,17 @@ export default function Hero() {
         <div
           className={styles.modalOverlay}
           role="presentation"
-          onMouseDown={() => setActiveModal(null)}
+          onMouseDown={closeModal}
         >
           <section
+            id="quick-link-dialog"
+            ref={modalRef}
             className={styles.modal}
             role="dialog"
             aria-modal="true"
-            aria-label={activeItem.label}
+            aria-labelledby={modalTitleId}
             onMouseDown={(event) => event.stopPropagation()}
+            onKeyDown={handleModalKeyDown}
           >
             <div className={styles.modalHeader}>
               <nav className={styles.modalNav} aria-label="Snabblänkar">
@@ -176,8 +243,9 @@ export default function Hero() {
                       activeModal === key ? styles.modalNavItemActive : ""
                     }`}
                     onClick={() => setActiveModal(key)}
+                    aria-pressed={activeModal === key}
                   >
-                    <Icon className={styles.icon} />
+                    <Icon className={styles.icon} aria-hidden="true" focusable="false" />
                     {label}
                   </button>
                 ))}
@@ -185,15 +253,21 @@ export default function Hero() {
 
               <button
                 type="button"
+                ref={closeButtonRef}
                 className={styles.closeButton}
-                onClick={() => setActiveModal(null)}
+                onClick={closeModal}
                 aria-label="Stäng"
               >
-                x
+                <span aria-hidden="true">x</span>
               </button>
             </div>
 
-            <div className={styles.modalBody}>{ActiveContent ? <ActiveContent /> : null}</div>
+            <div className={styles.modalBody}>
+              <h2 id={modalTitleId} className={styles.srOnly}>
+                {activeItem.label}
+              </h2>
+              {ActiveContent ? <ActiveContent /> : null}
+            </div>
           </section>
         </div>
       ) : null}

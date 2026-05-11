@@ -39,18 +39,19 @@
   height: 1px;
   background: rgba(78, 74, 68, 0.14);
   margin: 0 0 0.25rem;
-  width: min(100%, 1036px);
+  width: min(100%, 1181px);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  width: min(100%, 1036px);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 375px));
+  gap: 1.6rem;
+  width: min(100%, 1181px);
+  justify-content: center;
 }
 
 .status {
-  width: min(100%, 1036px);
+  width: min(100%, 1181px);
   box-sizing: border-box;
   margin: 0;
   padding: 1rem;
@@ -86,8 +87,9 @@
   height: 250px;
   background:
     linear-gradient(135deg, rgba(226, 222, 214, 0.86), rgba(246, 242, 236, 0.92));
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
+  background-position: center;
 }
 
 .cardBody {
@@ -131,7 +133,7 @@
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(46, 42, 36, 0.04);
   width: fit-content;
-  margin-left: max(0px, calc((100% - 1036px) / 2));
+  margin-left: max(0px, calc((100% - 1181px) / 2));
 }
 
 .plus {

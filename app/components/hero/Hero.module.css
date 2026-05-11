@@ -38,6 +38,18 @@
   text-decoration: underline;
 }
 
+.topLink:focus-visible,
+.topButton:focus-visible,
+.primary:focus-visible,
+.ghost:focus-visible,
+.listItem:focus-visible,
+.modalNavItem:focus-visible,
+.closeButton:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgba(54, 80, 58, 0.72);
+}
+
 .topButton {
   padding: 10px 16px;
   border-radius: 5px;
@@ -83,7 +95,7 @@
   font-size: 48px;
   line-height: 1.1;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   text-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
 }
 
@@ -222,6 +234,12 @@
   text-underline-offset: 4px;
 }
 
+.listItem[aria-expanded="true"] {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .icon {
   flex: 0 0 auto;
   opacity: 0.9;
@@ -288,6 +306,10 @@
   background: rgba(54, 80, 58, 0.1);
 }
 
+.modalNavItemActive {
+  border-color: rgba(54, 80, 58, 0.38);
+}
+
 .closeButton {
   width: 2.35rem;
   height: 2.35rem;
@@ -308,6 +330,29 @@
 .modalBody {
   overflow: auto;
   padding: 1rem;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topButton,
+  .primary,
+  .ghost,
+  .listItem,
+  .modalNavItem,
+  .closeButton {
+    transition: none;
+  }
 }
 
 @media (max-width: 900px) {

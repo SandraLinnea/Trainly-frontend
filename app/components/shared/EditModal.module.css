@@ -191,7 +191,9 @@
 .preview {
   width: 136px;
   height: 98px;
-  object-fit: cover;
+  object-fit: contain;
+  background:
+    linear-gradient(135deg, rgba(226, 222, 214, 0.86), rgba(246, 242, 236, 0.92));
   border-radius: 5px;
   border: 1px solid rgba(90, 91, 85, 0.14);
   box-shadow: 0 10px 24px rgba(44, 40, 34, 0.08);
