@@ -42,6 +42,12 @@
   font-size: 0.95rem;
 }
 
+.linkGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
 .links a {
   color: inherit;
   text-decoration: none;
@@ -67,6 +73,85 @@
   text-decoration: underline;
 }
 
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  background: rgba(20, 22, 20, 0.54);
+  backdrop-filter: blur(8px);
+}
+
+.modal {
+  width: min(1040px, 100%);
+  max-height: min(86vh, 860px);
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 252, 248, 0.34);
+  background:
+    linear-gradient(180deg, rgba(251, 247, 243, 0.98), rgba(247, 244, 239, 0.98)),
+    url("/images/Background.png") center/cover no-repeat;
+  box-shadow: 0 28px 70px rgba(8, 10, 8, 0.34);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(78, 74, 68, 0.13);
+  background: rgba(255, 252, 248, 0.72);
+}
+
+.modalNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.modalNavItem,
+.closeButton {
+  border: 1px solid rgba(75, 72, 66, 0.15);
+  border-radius: 5px;
+  background: rgba(255, 252, 248, 0.72);
+  color: #353832;
+  cursor: pointer;
+  font: inherit;
+}
+
+.modalNavItem {
+  padding: 0.55rem 0.8rem;
+}
+
+.modalNavItem:hover,
+.modalNavItemActive {
+  background: #213b31;
+  border-color: #213b31;
+  color: #f3ede4;
+}
+
+.closeButton {
+  width: 2.1rem;
+  height: 2.1rem;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.closeButton:hover {
+  background: rgba(33, 59, 49, 0.12);
+}
+
+.modalBody {
+  max-height: calc(min(86vh, 860px) - 4.1rem);
+  overflow: auto;
+  padding: 1.35rem;
+}
+
 @media (max-width: 960px) {
   .footer {
     grid-template-columns: 1fr;
@@ -78,5 +163,17 @@
   .left {
     flex-direction: column;
     gap: 0.35rem;
+  }
+
+  .modalOverlay {
+    padding: 0.75rem;
+  }
+
+  .modalHeader {
+    align-items: flex-start;
+  }
+
+  .modalBody {
+    padding: 1rem;
   }
 }

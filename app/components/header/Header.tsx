@@ -41,32 +41,44 @@ export default function Header({ requireAuth = true }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [friendNotifications, setFriendNotifications] = useState(0);
   const [calendarNotifications, setCalendarNotifications] = useState(0);
 
   useEffect(() => {
     let active = true;
 
-    async function requireAuth() {
+    async function checkAuth() {
       try {
         const response = await fetch(getApiUrl("/api/me"), {
           credentials: "include",
         });
         const data = (await response.json()) as { authenticated?: boolean };
+        const authenticated = Boolean(data.authenticated);
 
-        if (active && !data.authenticated) {
+        if (!active) {
+          return;
+        }
+
+        setIsAuthenticated(authenticated);
+
+        if (requireAuth && !authenticated) {
           router.replace("/auth/login");
         }
       } catch {
         if (active) {
+          setIsAuthenticated(false);
+
+          if (!requireAuth) {
+            return;
+          }
+
           router.replace("/auth/login");
         }
       }
     }
 
-    if (requireAuth) {
-      void requireAuth();
-    }
+    void checkAuth();
 
     return () => {
       active = false;
@@ -77,7 +89,7 @@ export default function Header({ requireAuth = true }: HeaderProps) {
     async function updateFriendNotifications() {
       let requestCount = 0;
 
-      if (requireAuth) {
+      if (isAuthenticated) {
         try {
           const response = await fetch(getApiUrl("/api/friends"), {
             credentials: "include",
@@ -107,13 +119,13 @@ export default function Header({ requireAuth = true }: HeaderProps) {
       window.removeEventListener(FRIEND_REQUESTS_CHANGED_EVENT, handleFriendNotificationsChange);
       window.removeEventListener("storage", handleFriendNotificationsChange);
     };
-  }, [requireAuth]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     let active = true;
 
     async function updateCalendarNotifications() {
-      if (!requireAuth) {
+      if (!isAuthenticated) {
         setCalendarNotifications(0);
         return;
       }
@@ -160,7 +172,7 @@ export default function Header({ requireAuth = true }: HeaderProps) {
         handleCalendarNotificationsChange,
       );
     };
-  }, [requireAuth]);
+  }, [isAuthenticated]);
 
   async function handleLogout() {
     if (loggingOut) return;
@@ -187,7 +199,7 @@ export default function Header({ requireAuth = true }: HeaderProps) {
           height={73}
           className={styles.logoLink}
           imageClassName={styles.logo}
-          href={requireAuth ? "/home" : "/"}
+          href={isAuthenticated ? "/home" : "/"}
         />
       </div>
 
@@ -233,7 +245,7 @@ export default function Header({ requireAuth = true }: HeaderProps) {
       </nav>
 
       <div className={styles.actions}>
-        {requireAuth ? (
+        {isAuthenticated ? (
           <button
             type="button"
             className={styles.button}
