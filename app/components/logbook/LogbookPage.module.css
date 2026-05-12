@@ -347,29 +347,35 @@
 
   .entry {
     grid-template-columns: 1fr;
+    gap: 0.7rem;
+    min-height: auto;
+    max-height: none;
+    padding: 0.95rem 4.8rem 0.95rem 1rem;
+    position: relative;
   }
 
-  .entry {
-    padding-right: 5rem;
-    position: relative;
+  .entryText {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
   }
 
   .editButton {
     position: absolute;
     right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0.9rem;
+    transform: none;
   }
 
   .entryArrow {
     position: absolute;
     right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0.9rem;
+    transform: none;
   }
 
   .expandedEntry .entryArrow {
-    transform: translateY(-50%);
+    transform: none;
   }
 
   .filterBar {

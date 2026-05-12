@@ -119,6 +119,40 @@ nav.actions {
   cursor: wait;
 }
 
+@media (max-width: 1180px) {
+  .header {
+    grid-template-columns: auto auto;
+    align-items: start;
+    row-gap: 1rem;
+    padding: 1rem 1.4rem 0.9rem;
+  }
+
+  .logoLink {
+    margin: -0.75rem 0 0;
+  }
+
+  .logo {
+    width: 112px;
+    height: auto;
+  }
+
+  nav.actions {
+    position: static;
+    grid-column: 1 / -1;
+    transform: none;
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  .header > .actions:last-child {
+    justify-self: end;
+    gap: 1.25rem;
+  }
+}
+
 @media (max-width: 960px) {
   .header {
     grid-template-columns: 1fr;
