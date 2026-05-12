@@ -3,52 +3,16 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 
-import { getApiUrl, readApiError } from "../../../lib/api";
 import LogoLink from "../../brand/LogoLink";
 import styles from "./ForgotPassword.module.css";
-
-type ForgotPasswordResponse = {
-  message?: string;
-  resetUrl?: string;
-};
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [resetUrl, setResetUrl] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setMessage("");
-    setResetUrl("");
-    setError("");
-    setLoading(true);
-
-    try {
-      const response = await fetch(getApiUrl("/api/auth/forgot-password"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ email }),
-      });
-
-      if (!response.ok) {
-        setError(await readApiError(response, "Kunde inte skicka återställning."));
-        return;
-      }
-
-      const data = (await response.json()) as ForgotPasswordResponse;
-      setMessage(data.message || "Om kontot finns får du instruktioner för återställning.");
-      setResetUrl(data.resetUrl || "");
-    } catch {
-      setError("Kunde inte skicka återställning just nu.");
-    } finally {
-      setLoading(false);
-    }
+    setMessage(`Ett mail har skickats till ${email.trim()}.`);
   }
 
   return (
@@ -80,18 +44,14 @@ export default function ForgotPassword() {
                 required
               />
 
-              {message ? <div className={styles.message}>{message}</div> : null}
-
-              {resetUrl ? (
-                <Link className={styles.resetLink} href={resetUrl}>
-                  Öppna återställningslänk
-                </Link>
+              {message ? (
+                <div className={styles.message} role="status">
+                  {message}
+                </div>
               ) : null}
 
-              {error ? <div className={styles.error}>{error}</div> : null}
-
-              <button className={styles.submit} type="submit" disabled={loading}>
-                {loading ? "Skickar..." : "Skicka återställning"}
+              <button className={styles.submit} type="submit">
+                Skicka återställning
               </button>
             </form>
 

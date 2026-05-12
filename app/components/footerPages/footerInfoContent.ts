@@ -57,7 +57,7 @@ export const footerInfoPages: Record<FooterInfoKey, FooterInfoPageData> = {
       },
       {
         title: "Kontakt",
-        body: "Har du frågor om integritet eller vill ändra uppgifter kan du kontakta oss via hej@trainly.se.",
+        body: "Har du frågor om integritet eller vill ändra uppgifter kan du kontakta oss via dog.trainly@gmail.com.",
       },
     ],
   },
@@ -95,7 +95,7 @@ export const footerInfoPages: Record<FooterInfoKey, FooterInfoPageData> = {
     sections: [
       {
         title: "E-post",
-        body: "Skicka ett mejl till hej@trainly.se om du har frågor, hittar något som inte fungerar eller vill lämna feedback.",
+        body: "Skicka ett mejl till dog.trainly@gmail.com om du har frågor, hittar något som inte fungerar eller vill lämna feedback.",
       },
       {
         title: "Support",
@@ -115,3 +115,4 @@ export const footerInfoPageList = [
   footerInfoPages.terms,
   footerInfoPages.contact,
 ];
+

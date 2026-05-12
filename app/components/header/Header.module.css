@@ -2,9 +2,9 @@
   position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto;
-  align-items: center;
+  align-items: start;
   gap: 1.6rem;
-  padding: 0.55rem 2.1rem;
+  padding: 1.95rem 2.1rem 0.55rem;
   background:
     linear-gradient(180deg, rgba(33, 59, 49, 0.8), rgba(42, 68, 57, 0.8)),
     url("/images/HeaderAndFooter.png") center/cover no-repeat;
@@ -22,8 +22,8 @@
 }
 
 .logoLink {
-  margin: 0.15rem 0;
-  padding: 1rem 0;
+  margin: -1.4rem 0 0;
+  padding: 0;
 }
 
 .actions {
@@ -33,11 +33,13 @@
 }
 
 .header > .actions:last-child {
+  align-self: start;
   justify-self: end;
 }
 
 nav.actions {
   position: absolute;
+  top: 1.95rem;
   left: 50%;
   transform: translateX(calc(-50% - 10rem));
 }
@@ -79,19 +81,35 @@ nav.actions {
   line-height: 1;
 }
 
-.button {
+.button,
+.profileLink {
+  display: inline-flex;
+  align-items: center;
   border: 0;
   border-radius: 0;
-  padding: 0;
+  padding: 0 0 0.25rem;
   background: transparent;
   color: rgba(255, 255, 255, 0.92);
   font-size: 1rem;
   font-weight: 400;
   cursor: pointer;
   box-shadow: none;
+  text-decoration: none;
+  line-height: 1.25;
+  border-bottom: 2px solid transparent;
 }
 
-.button:hover {
+.profileLink {
+  gap: 0.42rem;
+}
+
+.profileIcon {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.button:hover,
+.profileLink:hover {
   text-decoration: underline;
   text-underline-offset: 5px;
 }

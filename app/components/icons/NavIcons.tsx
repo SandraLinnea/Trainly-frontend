@@ -93,6 +93,15 @@ export function CoursesIcon({ size = 20, ...props }: IconProps) {
   );
 }
 
+export function AccountIcon({ size = 20, ...props }: IconProps) {
+  return (
+    <svg {...baseProps(size)} {...props}>
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M5 20a7 7 0 0 1 14 0" />
+    </svg>
+  );
+}
+
 export function TrainingInspirationIcon({ size = 20, ...props }: IconProps) {
   return (
     <svg

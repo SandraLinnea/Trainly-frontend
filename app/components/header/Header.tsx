@@ -10,6 +10,7 @@ import {
   isSharedCalendarEventDismissed,
 } from "../../lib/calendarNotifications";
 import LogoLink from "../brand/LogoLink";
+import { AccountIcon } from "../icons/NavIcons";
 import styles from "./Header.module.css";
 
 const FRIEND_REQUESTS_CHANGED_EVENT = "trainly:friendRequestsChanged";
@@ -246,14 +247,24 @@ export default function Header({ requireAuth = true }: HeaderProps) {
 
       <div className={styles.actions}>
         {isAuthenticated ? (
-          <button
-            type="button"
-            className={styles.button}
-            onClick={handleLogout}
-            disabled={loggingOut}
-          >
-            {loggingOut ? "Loggar ut..." : "Logga ut"}
-          </button>
+          <>
+            <Link
+              href="/min-sida"
+              className={navClass(styles.profileLink, styles.active, pathname === "/min-sida")}
+              prefetch={false}
+            >
+              <AccountIcon className={styles.profileIcon} />
+              <span>Min profil</span>
+            </Link>
+            <button
+              type="button"
+              className={styles.button}
+              onClick={handleLogout}
+              disabled={loggingOut}
+            >
+              {loggingOut ? "Loggar ut..." : "Logga ut"}
+            </button>
+          </>
         ) : (
           <>
             <Link href="/auth/login" className={styles.button} prefetch={false}>

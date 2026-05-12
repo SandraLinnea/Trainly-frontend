@@ -4,6 +4,7 @@ import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
 
 import { getApiUrl } from "../../lib/api";
+import { TRAINLY_CONTACT_EMAIL } from "../../lib/contact";
 import { FooterInfoContent } from "../footerPages/FooterInfoPage";
 import {
   footerInfoPageList,
@@ -79,8 +80,8 @@ export default function Footer() {
         </div>
 
         <div className={styles.right}>
-          <a href="mailto:hej@trainly.se" className={styles.mail}>
-            hej@trainly.se
+          <a href={`mailto:${TRAINLY_CONTACT_EMAIL}`} className={styles.mail}>
+            {TRAINLY_CONTACT_EMAIL}
           </a>
         </div>
       </footer>
