@@ -126,3 +126,24 @@ export function TrainingInspirationIcon({ size = 20, ...props }: IconProps) {
     </svg>
   );
 }
+
+export function SharedTipsIcon({ size = 20, ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      aria-hidden="true"
+      {...props}
+    >
+      <circle cx="5" cy="9" r="2.25" />
+      <circle cx="11" cy="4" r="2.25" />
+      <path d="m7.75 9.25c0-1 .75-3 3.25-3s3.25 2 3.25 3m-12.5 5c0-1 .75-3 3.25-3s3.25 2 3.25 3" />
+    </svg>
+  );
+}

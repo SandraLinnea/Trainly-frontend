@@ -8,6 +8,44 @@ import { getApiUrl, readApiError } from "../../../lib/api";
 import LogoLink from "../../brand/LogoLink";
 import styles from "./Login.module.css";
 
+function EyeIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" />
+      <circle cx="12" cy="12" r="2.5" />
+    </svg>
+  );
+}
+
+function UserIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M5 20a7 7 0 0 1 14 0" />
+    </svg>
+  );
+}
+
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -91,7 +129,7 @@ export default function Login() {
                   aria-describedby={error ? "login-error" : undefined}
                 />
                 <span className={styles.inputIcon} aria-hidden>
-                  👤
+                  <UserIcon />
                 </span>
               </div>
 
@@ -119,7 +157,7 @@ export default function Login() {
                   aria-pressed={showPw}
                   aria-label={showPw ? "Dölj lösenord" : "Visa lösenord"}
                 >
-                  👁
+                  <EyeIcon />
                 </button>
               </div>
 

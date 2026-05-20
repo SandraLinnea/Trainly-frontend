@@ -1,12 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { FocusEvent, FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { getApiUrl, readApiError } from "../../../lib/api";
 import LogoLink from "../../brand/LogoLink";
 import styles from "./Register.module.css";
+
+function EyeIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" />
+      <circle cx="12" cy="12" r="2.5" />
+    </svg>
+  );
+}
 
 export default function Register() {
   const router = useRouter();
@@ -18,23 +37,23 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function clearSelection(e: React.FocusEvent<HTMLInputElement>) {
-    const { value } = e.currentTarget;
+  function clearSelection(event: FocusEvent<HTMLInputElement>) {
+    const { value } = event.currentTarget;
     const caretPosition = value.length;
 
     if (
-      e.currentTarget.type === "text" ||
-      e.currentTarget.type === "search" ||
-      e.currentTarget.type === "tel" ||
-      e.currentTarget.type === "url" ||
-      e.currentTarget.type === "password"
+      event.currentTarget.type === "text" ||
+      event.currentTarget.type === "search" ||
+      event.currentTarget.type === "tel" ||
+      event.currentTarget.type === "url" ||
+      event.currentTarget.type === "password"
     ) {
-      e.currentTarget.setSelectionRange(caretPosition, caretPosition);
+      event.currentTarget.setSelectionRange(caretPosition, caretPosition);
     }
   }
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     setError(null);
     setLoading(true);
 
@@ -77,18 +96,18 @@ export default function Register() {
         <main className={styles.main}>
           <section className={styles.card} aria-label="Registrera dig">
             <h1 className={styles.title}>Registrera dig</h1>
-            <p className={styles.subtitle}>Skapa ett konto pa Trainly</p>
+            <p className={styles.subtitle}>Skapa ett konto på Trainly</p>
 
             <form className={styles.form} onSubmit={onSubmit}>
               <label className={styles.srOnly} htmlFor="firstName">
-                Fornamn
+                Förnamn
               </label>
               <div className={styles.inputWrap}>
                 <input
                   id="firstName"
                   className={styles.input}
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(event) => setFirstName(event.target.value)}
                   onFocus={clearSelection}
                   autoComplete="given-name"
                   placeholder="Förnamn"
@@ -104,7 +123,7 @@ export default function Register() {
                   id="lastName"
                   className={styles.input}
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(event) => setLastName(event.target.value)}
                   onFocus={clearSelection}
                   autoComplete="family-name"
                   placeholder="Efternamn"
@@ -121,7 +140,7 @@ export default function Register() {
                   className={styles.input}
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(event) => setEmail(event.target.value)}
                   onFocus={clearSelection}
                   autoComplete="email"
                   placeholder="Email"
@@ -130,7 +149,7 @@ export default function Register() {
               </div>
 
               <label className={styles.srOnly} htmlFor="password">
-                Losenord
+                Lösenord
               </label>
               <div className={styles.inputWrap}>
                 <input
@@ -138,7 +157,7 @@ export default function Register() {
                   className={styles.input}
                   type={showPw ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(event) => setPassword(event.target.value)}
                   onFocus={clearSelection}
                   autoComplete="new-password"
                   placeholder="Lösenord"
@@ -147,10 +166,11 @@ export default function Register() {
                 <button
                   type="button"
                   className={styles.eyeBtn}
-                  onClick={() => setShowPw((v) => !v)}
-                  aria-label={showPw ? "Dolj losenord" : "Visa losenord"}
+                  onClick={() => setShowPw((value) => !value)}
+                  aria-pressed={showPw}
+                  aria-label={showPw ? "Dölj lösenord" : "Visa lösenord"}
                 >
-                  Visa
+                  <EyeIcon />
                 </button>
               </div>
 

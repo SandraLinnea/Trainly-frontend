@@ -69,10 +69,12 @@
 
 .inputWrap {
   position: relative;
+  width: 100%;
 }
 
 .input {
-  width: 85%;
+  width: 100%;
+  box-sizing: border-box;
   height: 38px;
   padding: 0 52px 0 16px;
   border-radius: 5px;

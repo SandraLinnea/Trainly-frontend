@@ -11,6 +11,7 @@ import {
   DogClubIcon,
   DogIcon,
   ShoppingIcon,
+  SharedTipsIcon,
   TrainingInspirationIcon,
   TrophyIcon,
   VetIcon,
@@ -41,6 +42,11 @@ const authenticatedItems: NavItem[] = [
     href: "/TrainingInspiration",
     label: "Träningsinspiration",
     Icon: TrainingInspirationIcon,
+  },
+  {
+    href: "/tips",
+    label: "Tips från andra",
+    Icon: SharedTipsIcon,
   },
 ];
 
