@@ -49,12 +49,22 @@
   gap: 0.65rem;
 }
 
-.links a {
+.links a,
+.footerButton {
   color: inherit;
   text-decoration: none;
 }
 
-.links a:hover {
+.footerButton {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+
+.links a:hover,
+.footerButton:hover {
   text-decoration: underline;
 }
 

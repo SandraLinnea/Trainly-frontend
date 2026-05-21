@@ -1,6 +1,6 @@
 "use client";
 
-import { MouseEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { getApiUrl } from "../../lib/api";
@@ -43,18 +43,6 @@ export default function Footer() {
     };
   }, []);
 
-  function handleFooterLinkClick(
-    event: MouseEvent<HTMLAnchorElement>,
-    page: FooterInfoPageData,
-  ) {
-    if (isAuthenticated) {
-      return;
-    }
-
-    event.preventDefault();
-    setActivePage(page);
-  }
-
   return (
     <>
       <footer className={styles.footer}>
@@ -67,13 +55,20 @@ export default function Footer() {
             {footerInfoPageList.map((page, index) => (
               <span className={styles.linkGroup} key={page.href}>
                 {index > 0 ? <span>·</span> : null}
-                <Link
-                  href={page.href}
-                  prefetch={false}
-                  onClick={(event) => handleFooterLinkClick(event, page)}
-                >
-                  {page.label}
-                </Link>
+                {isAuthenticated ? (
+                  <Link href={page.href} prefetch={false}>
+                    {page.label}
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.footerButton}
+                    onClick={() => setActivePage(page)}
+                    aria-haspopup="dialog"
+                  >
+                    {page.label}
+                  </button>
+                )}
               </span>
             ))}
           </div>
